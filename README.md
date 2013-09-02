@@ -12,7 +12,7 @@ ____
 LogMon API
 =========
 
-LogMon API provides necessary resources and functinalities for a monitoring client. The web interface of LogMon works through this API.
+LogMon API provides necessary resources and functionalities for a monitoring client. The web interface of LogMon works through this API.
 
 ####Version####
 
