@@ -5,7 +5,8 @@ yet another web based text log monitor tool.
 
 more detailed documentation will be here soon.
 
-[diagram]: https://raw.github.com/muatik/logmon/master/docs/logmon.png "The diagram of Logmon"
+
+![the diagram](https://raw.github.com/muatik/logmon/master/docs/logmon.png "The diagram of LogMon")
 
 
 ____
