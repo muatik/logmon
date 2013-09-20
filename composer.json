@@ -1,0 +1,10 @@
+{
+	"name" : "LogMon Log monitoring tool",
+	"type" : "project",
+	"minimum-stability" : "stable",
+	"license" : "Apache License Version 2.0",
+	"keywords"    : ["log", "monitor", "logging"],
+	"require" : {
+		"silex/silex" : "~1.0"
+	}
+}
