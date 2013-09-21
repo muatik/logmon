@@ -26,7 +26,7 @@ API Functions
 
 ####1) Registering and updating a project####
 
-```PUT /v1/projects```
+```PUT /v1/projects/register```
 Registers a new project or updates a current one. This command neeeds a json object placed in http request body. Each json object requires the following members:
 
 - name : project's name.

@@ -1,7 +1,10 @@
 <?php
 
+define('ROOT',dirname(__DIR__).'/../');
+$app['debug'] = true;
 $app['locale'] = 'en';
-$app['resources_path'] = realpath(__DIR__.'/../resources/');
+$app['resources_path'] = realpath(ROOT.'/resources/');
+
 
 /**
  * DATA STORAGE CONFIGURATIONS
@@ -43,7 +46,7 @@ $app['db.config.file'] = array(
 // if you would like to save logs in a text file, use the following set:
 $app['logging.target'] = 'file';
 $app['logging.file.config'] = $app['db.config.file'];
-$app['logging.file.name'] = date('Y:m').'.log';
+$app['logging.file.name'] = ROOT . '/tmp/logmon.log';
 
 
 // if you would like to save logs in MongoDB, use the following set: 
@@ -62,21 +65,5 @@ $app['logging.database'] = 'logmong';
 $app['logging.table'] = 'logs';
 
 
-
-
-
-
-
-
-
-$app->register(new Silex\Provider\HttpCacheServiceProvider(), array(
-	'http_cache.cache_dir' => ROOT.'/temp/http'
-));
-
-$app['db.mongo'] = $app->share(
-	function($app) {
-		return new Mongo($app['db.config.mongodb']);
-	}
-);
 
 ?>

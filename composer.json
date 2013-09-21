@@ -5,6 +5,8 @@
 	"license" : "Apache License Version 2.0",
 	"keywords"    : ["log", "monitor", "logging"],
 	"require" : {
-		"silex/silex" : "~1.0"
+		"silex/silex" : "~1.0",
+		"monolog/monolog" : "~1.0",
+		"symfony/validator": "~2.3"
 	}
 }
