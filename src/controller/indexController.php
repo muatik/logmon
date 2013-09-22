@@ -26,10 +26,16 @@ class ProjectsController implements ControllerProviderInterface
 
 	public function register(Application $app) {
 		$request = $app['request'];
+		$projects= $app['projects'];
 		$project = json_decode($request->getContent());
 		
-		$validator = $app['validator'];
+		try {
+			$project = $projectss::create($project);
+			$project->save();
+		} catch(Exception $e) {
 
+		}
+		/*
 		$errors = $validator->validateValue($project->name, 
 			array(
 				new Assert\NotBlank(),
@@ -42,6 +48,7 @@ class ProjectsController implements ControllerProviderInterface
 
 		print_r($project);
 		return 'registering...';
+		 */
 	}
 
 	public function getList(Application $app) {
