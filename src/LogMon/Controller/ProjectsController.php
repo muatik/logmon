@@ -13,7 +13,7 @@ class ProjectsController implements ControllerProviderInterface
 		$index->get('/', array($this, 'index'));
 		
 		$index->match('/register', array($this, 'register'))
-			->method('PUT|GET');
+			->method('POST|GET');
 
 		$index->get('/list', array($this, 'getList'));
 
@@ -23,36 +23,38 @@ class ProjectsController implements ControllerProviderInterface
 	public function index(Application $app) {
 		return 'projects index';
 	}
-
+	
 	public function register(Application $app) {
-		$request = $app['request'];
-		$projects= $app['projects'];
-		$project = json_decode($request->getContent());
-		
-		try {
-			$project = $projectss::create($project);
-			$project->save();
-		} catch(Exception $e) {
+		$projects = $app['projects'];
+		$newProject = $app['project.factory'];
 
-		}
-		/*
-		$errors = $validator->validateValue($project->name, 
-			array(
-				new Assert\NotBlank(),
-				new Assert\Length(array('min' => 3))
-			));
-
-		if (count($errors) > 0) {
-			return $errors;
+		try	{
+			$newProject->initFromJson($app['request']->getContent());
+			$projects->register($newProject);
+			
+			$return = 'ok';
+		} catch (\Exception $e) {
+			$return = $e->getMessage();
 		}
 
-		print_r($project);
-		return 'registering...';
-		 */
+		return $return;
 	}
 
+
 	public function getList(Application $app) {
-		return 'getList';
+		$projects = $app['projects'];
+		$projectList = $projects->getAll();
+
+		$result = new \stdClass();
+		$result->projects = array();
+
+		foreach($projectList as $i) {
+			$i = $i->getProperties();
+			$i['_id'] = (string) $i['_id'];
+			$result->projects[] = $i;
+		}	
+		
+		return json_encode($result);
 	}
 }
 

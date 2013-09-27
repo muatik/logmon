@@ -5,7 +5,12 @@ require ROOT."/vendor/autoload.php";
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use LogMon\Manager\MongoDBCollection;
 
+if ($app['debug']) {
+	error_reporting(E_ALL);
+	ini_set('display_errors','on');
+}
 
 if (isset($app)) {
 	$appConfig = $app;
@@ -49,14 +54,28 @@ $app->register(new Silex\Provider\HttpCacheServiceProvider(), array(
 	'http_cache.cache_dir' => ROOT.'/temp/http'
 ));
 
-$app['db.mongo'] = $app->share(
-	function($app) {
-		return new Mongo($app['db.config.mongodb']);
-	}
-);
+$app['db.mongo'] = $app->share(function($app) {
+	$c = new Mongo(); 
+	$db = $c->selectDB('logmon');
+	return $db;
+	// TODO: use config
+	return new Mongo($app['db.config.mongodb']);
+});
+
+$app['db.mongo.collection'] = function($app) {
+	return new LogMon\Manager\MongoDBCollection($app['db.mongo']);
+};
 
 
-require ROOT.'src/router.php';
+$app['projects'] = $app->share(function($app) {
+	return new LogMon\Manager\Projects($app['db.mongo.collection']);
+});
+
+$app['project.factory'] = function($app) {
+	return new LogMon\Model\Project();
+};
+
+require ROOT.'src/LogMon/router.php';
 
 
 return $app;

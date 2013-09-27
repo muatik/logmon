@@ -1,4 +1,7 @@
 {
+	"autoload": {
+        "psr-0": {"LogMon": "src/"}
+    },
 	"name" : "LogMon Log monitoring tool",
 	"type" : "project",
 	"minimum-stability" : "stable",
