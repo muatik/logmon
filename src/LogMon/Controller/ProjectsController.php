@@ -12,8 +12,11 @@ class ProjectsController implements ControllerProviderInterface
 		
 		$index->get('/', array($this, 'index'));
 		
-		$index->match('/register', array($this, 'register'))
-			->method('POST|GET');
+		$index->post('/register', array($this, 'register'));
+			
+		$index->post('/update', array($this, 'update'));
+
+		$index->match('/delete/{id}', array($this, 'delete'));
 
 		$index->get('/list', array($this, 'getList'));
 
@@ -31,7 +34,7 @@ class ProjectsController implements ControllerProviderInterface
 		try	{
 			$newProject->initFromJson($app['request']->getContent());
 			$projects->register($newProject);
-			
+			// TODO: return more appropriate return message
 			$return = 'ok';
 		} catch (\Exception $e) {
 			$return = $e->getMessage();
@@ -40,6 +43,32 @@ class ProjectsController implements ControllerProviderInterface
 		return $return;
 	}
 
+	public function delete(Application $app, $id) {
+		$projects = $app['projects'];
+		$newProject = $app['project.factory'];
+		try {
+			$projects->deleteById($id);
+		} catch (\Exception $e) {
+			$return = $e->getMessage();
+		}
+		return 'deleting '.$id;
+	}
+
+	public function update(Application $app) {
+		$projects = $app['projects'];
+		$newProject = $app['project.factory'];
+
+		try {
+			$newProject->initFromJson($app['request']->getContent());
+			$projects->update($newProject);
+			// TODO: return more appropriate return message
+			$return = 'ok panpa';
+		} catch(\Exception $e) {
+			$return = $e->getMessage();
+		}
+
+		return $return;
+	}
 
 	public function getList(Application $app) {
 		$projects = $app['projects'];

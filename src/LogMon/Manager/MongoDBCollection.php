@@ -1,5 +1,6 @@
 <?php
 namespace LogMon\Manager;
+
 use LogMon\Manager\IDBCollection;
 use LogMon\Manager\DBResult;
 
@@ -19,7 +20,7 @@ class MongoDBCollection implements IDBCollection
 		$this->collection = $this->db->selectCollection($collection);
 	}
 
-	public function insert($object) {
+	public function insert(&$object) {
 		$result = new DBResult();
 
 		try {
@@ -37,12 +38,32 @@ class MongoDBCollection implements IDBCollection
 		return $result;
 	}
 
-	public function update($object) {
-		$this->collection->update($object);
+	public function update(Array $criteria, $object) {
+		$result = new DBResult();
+		try {
+			$this->collection->update(
+				$criteria, 
+				$object,
+				array('w' => $this->safe)
+			);
+			$result->success = true;
+		} catch (\MongoCursorException $e) {
+			$result->success = false;
+			$result->message = $e->getMessage();
+		}
+		return $result;
 	}
 
 	public function delete(Array $criteria) {
-		$this->collection->remove($criteria);
+		$result = new DBResult();
+		try {
+			$this->collection->remove($criteria);
+			$result->success = true;
+		} catch (\MongoCursorException $e) {
+			$result->success = false;
+			$result->message = $e->getMessage();
+		}
+		return $result;
 	}
 
 	public function find(
@@ -67,5 +88,3 @@ class MongoDBCollection implements IDBCollection
 		return $cursor;
 	}
 }
-
-?>

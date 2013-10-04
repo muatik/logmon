@@ -17,8 +17,8 @@ $app['resources_path'] = realpath(ROOT.'/resources/');
 $app['db.config.mysql'] = array(
 	'host' => 'localhost',
 	'database' => 'logmon',
-	'user' => '',
-	'password' => ''
+	'user' => 'root',
+	'password' => 'root'
 );
 
 // If you use MongoDB, configure and comment out the following set:

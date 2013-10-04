@@ -54,6 +54,13 @@ $app->register(new Silex\Provider\HttpCacheServiceProvider(), array(
 	'http_cache.cache_dir' => ROOT.'/temp/http'
 ));
 
+$app['db.mysql'] = $app->share(function($app) {
+	$conf = $app['db.config.mysql'];
+	return new Mysqli(
+		$conf['host'], $conf['user'], $conf['password'], $conf['database']
+	);
+});
+
 $app['db.mongo'] = $app->share(function($app) {
 	$c = new Mongo(); 
 	$db = $c->selectDB('logmon');
@@ -62,13 +69,19 @@ $app['db.mongo'] = $app->share(function($app) {
 	return new Mongo($app['db.config.mongodb']);
 });
 
+$app['db.mysql.collection'] = function($app) {
+	return new LogMon\Manager\MysqlDBCollection($app['db.mysql']);
+};
+
 $app['db.mongo.collection'] = function($app) {
 	return new LogMon\Manager\MongoDBCollection($app['db.mongo']);
 };
 
 
+
+
 $app['projects'] = $app->share(function($app) {
-	return new LogMon\Manager\Projects($app['db.mongo.collection']);
+	return new LogMon\Manager\Projects($app['db.mysql.collection']);
 });
 
 $app['project.factory'] = function($app) {

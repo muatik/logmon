@@ -35,6 +35,8 @@ Registers a new project or updates a current one. This command neeeds a json obj
 
 An example json can be seen here: https://gist.github.com/muatik/6412938#file-project-json
 
+TODO: project delete, project update
+
 ####2) Getting list of projects####
 
 ```GET /v1/projects/list```

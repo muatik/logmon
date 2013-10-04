@@ -8,9 +8,9 @@ interface IDBCollection
 
 	public function setCollection($collection);
 	
-	public function insert($object);
+	public function insert(&$object);
 	
-	public function update($object);
+	public function update(Array $criteria, $object);
 
 	public function delete(Array $criteria);
 

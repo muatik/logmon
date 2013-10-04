@@ -4,6 +4,11 @@ namespace LogMon\Manager;
 
 use LogMon\Model\Project;
 
+/**
+ * The class Projects manages CRUD operations for projects.
+ * 
+ * @author Tobias Schlitt <toby@php.net> 
+ */
 class Projects
 {
 	
@@ -15,6 +20,12 @@ class Projects
 	 */
 	private $collection = 'projects';
 	
+	/**
+	 * database connection service
+	 * 
+	 * @var IDBCollection
+	 * @access private
+	 */
 	private $db;
 	
 	public function __construct(IDBCollection $db) {
@@ -62,13 +73,17 @@ class Projects
 	 * @return boolean
 	 */
 	public function update(Project $project) {
+		$object = $project->getProperties();
+		$id = $object['_id'];
+		unset($object['_id']);
+		
 		$result = $this->db->update(
-			array('_id' => $project->_id),
-			$project
+			array('_id' => $id),
+			$object
 		);
 
 		if ($result->success != true)
-			throw new Exception($result->error->message);
+			throw new \Exception($result->message);
 
 		return true;
 	}
@@ -83,8 +98,19 @@ class Projects
 	 * @return boolean
 	 */
 	public function delete(Project $project) {
+		return $this->deleteById($project->_id);
+	}
+
+	/**
+	 * deletes the project associated with the given id. 
+	 * 
+	 * @param mixed $id 
+	 * @access public
+	 * @return boolean
+	 */
+	public function deleteById($id) {
 		$result = $this->db->delete(
-			array('_id' => $project->_id)
+			array('_id' => $id)
 		);
 
 		if ($result->success != true)
