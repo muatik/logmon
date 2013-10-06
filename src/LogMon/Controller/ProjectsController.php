@@ -9,11 +9,11 @@ class ProjectsController implements ControllerProviderInterface
 {
 	public function connect(Application $app){
 		$index = $app['controllers_factory'];
-		
+
 		$index->get('/', array($this, 'index'));
-		
+
 		$index->post('/register', array($this, 'register'));
-			
+
 		$index->post('/update', array($this, 'update'));
 
 		$index->match('/delete/{id}', array($this, 'delete'));
@@ -24,6 +24,7 @@ class ProjectsController implements ControllerProviderInterface
 	}
 
 	public function index(Application $app) {
+		echo $app['request']->getContent();
 		return 'projects index';
 	}
 	
@@ -35,7 +36,7 @@ class ProjectsController implements ControllerProviderInterface
 			$newProject->initFromJson($app['request']->getContent());
 			$projects->register($newProject);
 			// TODO: return more appropriate return message
-			$return = 'ok';
+			$return = 'registered';
 		} catch (\Exception $e) {
 			$return = $e->getMessage();
 		}
@@ -48,10 +49,11 @@ class ProjectsController implements ControllerProviderInterface
 		$newProject = $app['project.factory'];
 		try {
 			$projects->deleteById($id);
+			$return = 'deleting '.$id;
 		} catch (\Exception $e) {
 			$return = $e->getMessage();
 		}
-		return 'deleting '.$id;
+		return $return;
 	}
 
 	public function update(Application $app) {
@@ -62,7 +64,7 @@ class ProjectsController implements ControllerProviderInterface
 			$newProject->initFromJson($app['request']->getContent());
 			$projects->update($newProject);
 			// TODO: return more appropriate return message
-			$return = 'ok panpa';
+			$return = 'updated';
 		} catch(\Exception $e) {
 			$return = $e->getMessage();
 		}

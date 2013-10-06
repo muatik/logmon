@@ -16,14 +16,16 @@ $app['resources_path'] = realpath(ROOT.'/resources/');
 // If you use MySQL, configure and comment out the following set:
 $app['db.config.mysql'] = array(
 	'host' => 'localhost',
-	'database' => 'logmon',
+	'dbname' => 'logmon',
 	'user' => 'root',
-	'password' => 'root'
+	'password' => 'root',
+	'driver' => 'pdo_mysql',
+	'charset' => 'utf8'
 );
 
 // If you use MongoDB, configure and comment out the following set:
 $app['db.config.mongodb'] = array(
-	'host' => 'mongodb://localhost/',
+	'host' => 'localhost',
 	'database' => 'logmon',
 	'auth' => false, // Does mongodb require authentication?
 	'user' => '',

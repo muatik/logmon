@@ -10,6 +10,9 @@
 	"require" : {
 		"silex/silex" : "~1.0",
 		"monolog/monolog" : "~1.0",
-		"symfony/validator": "~2.3"
+		"symfony/validator": "~2.3",
+		"symfony/browser-kit": ">=2.3,<2.4-dev",
+        "doctrine/orm": "2.4.*",
+		"doctrine/mongodb": "1.1.*@dev"
 	}
 }

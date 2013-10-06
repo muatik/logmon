@@ -55,26 +55,41 @@ $app->register(new Silex\Provider\HttpCacheServiceProvider(), array(
 ));
 
 $app['db.mysql'] = $app->share(function($app) {
-	$conf = $app['db.config.mysql'];
-	return new Mysqli(
-		$conf['host'], $conf['user'], $conf['password'], $conf['database']
-	);
+	$connParams = $app['db.config.mysql'];
+	$conn = \Doctrine\DBAL\DriverManager::getConnection($connParams);
+	return $conn;
 });
 
-$app['db.mongo'] = $app->share(function($app) {
-	$c = new Mongo(); 
-	$db = $c->selectDB('logmon');
+$app['db.mongodb'] = $app->share(function($app) {
+	$connParams = $app['db.config.mongodb'];
+	
+	if ($connParams['auth']) {
+		$connString = sprintf(
+			'mongodb://%s:%s@%s/%s',
+			$connParams['user'],
+			$connParams['password'],
+			$connParams['host'],
+			$connParams['database']
+		);
+	} else {
+		$connString = sprintf(
+			'mongodb://%s/%s',
+			$connParams['host'],
+			$connParams['database']
+		);
+	}
+	
+	$conn = new \Doctrine\MongoDB\Connection($connString);
+	$db = $conn->selectDatabase($connParams['database']);
 	return $db;
-	// TODO: use config
-	return new Mongo($app['db.config.mongodb']);
 });
 
 $app['db.mysql.collection'] = function($app) {
 	return new LogMon\Manager\MysqlDBCollection($app['db.mysql']);
 };
 
-$app['db.mongo.collection'] = function($app) {
-	return new LogMon\Manager\MongoDBCollection($app['db.mongo']);
+$app['db.mongodb.collection'] = function($app) {
+	return new LogMon\Manager\MongoDBCollection($app['db.mongodb']);
 };
 
 
@@ -89,7 +104,6 @@ $app['project.factory'] = function($app) {
 };
 
 require ROOT.'src/LogMon/router.php';
-
 
 return $app;
 

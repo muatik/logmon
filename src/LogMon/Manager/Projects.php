@@ -46,7 +46,7 @@ class Projects
 		try {
 			$project->isValid();
 		} catch (\Exception $e) {
-			throw new \Exception('dd');
+			throw $e;
 		}
 
 		$object = $project->getProperties();
@@ -77,10 +77,11 @@ class Projects
 		$id = $object['_id'];
 		unset($object['_id']);
 		
-		$result = $this->db->update(
-			array('_id' => $id),
-			$object
+		$criteria = array(
+			array('eq', '_id', $id)
 		);
+
+		$result = $this->db->update($criteria, $object);
 
 		if ($result->success != true)
 			throw new \Exception($result->message);
@@ -109,12 +110,14 @@ class Projects
 	 * @return boolean
 	 */
 	public function deleteById($id) {
-		$result = $this->db->delete(
-			array('_id' => $id)
+		$criteria = array(
+			array('eq', '_id', $id)
 		);
 
+		$result = $this->db->delete($criteria);
+
 		if ($result->success != true)
-			throw new Exception($result->error->message);
+			throw new \Exception($result->message);
 
 		return true;
 	}
@@ -127,7 +130,12 @@ class Projects
 	 * @return array
 	 */
 	public function getAll() {
-		$records = $this->db->find();
+		
+		$criteria = array(
+			/*array("eq", "_id", "3"),
+			array("eq", "name", '"mustafa"')*/
+		);
+		$records = $this->db->find($criteria);
 		$projects = array();
 
 		foreach($records as $i) {
