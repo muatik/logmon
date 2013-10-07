@@ -26,20 +26,51 @@ API Functions
 
 ####1) Registering and updating a project####
 
-```PUT /v1/projects/register```
+```POST /v1/projects/register```
+
 Registers a new project or updates a current one. This command neeeds a json object placed in http request body. Each json object requires the following members:
 
 - name : project's name.
 - codeName : project's code name
-- logPath :  file system path of log, like /var/wwww/projectX/log.txt
+- logConfig :  file system path of log like /var/wwww/projectX/log.txt, or database configuration 
 
-An example json can be seen here: https://gist.github.com/muatik/6412938#file-project-json
+####logConfig####
+logConfig's structure depends on the storage type of the log.
 
-TODO: project delete, project update
+If the log is stored in a ***text file***, logConfig must have the following configuration:
 
-####2) Getting list of projects####
+- filePath : the file system path of the log
+
+Example: https://gist.github.com/muatik/6412938#file-project-textfile-json
+
+If the log is stored in a database such as ***Mysql*** or ***MongoDB***, logConfig must have the following configuration:
+
+- db.host : the database server's host address
+- db.port : the database server's port address
+- db.username : the database username
+- db.password : the database password
+- db.databaseName : the database name
+- db.collectionName : the collection or table name in which log entries are stored.
+
+
+An example json can be seen here: https://gist.github.com/muatik/6412938#file-project-mysqldb-json
+
+####2) Updating projects####
+```POST /v1/projects/update/```
+Updates a registered project. This command neeeds a json object placed in http request body. The json object is the same as ```register``` command's. But there is only one addition to the register json, this is the id value of the project. 
+
+An example json can be seen here: https://gist.github.com/muatik/6412938#file-project-update-json
+
+####3) Deleting projects####
+```DELETE /v1/projects/register/{projectId}```
+
+Deletes the registered project matching the given project id. 
+
+
+####4) Getting list of projects####
 
 ```GET /v1/projects/list```
+
 Returns a list of registered projects. Each entry consists of the following variables:
 
 - name : project's name.
@@ -49,7 +80,7 @@ Returns a list of registered projects. Each entry consists of the following vari
 
 An example json can be seen here: https://gist.github.com/muatik/6412938#file-projectslist-json
 
-####3) Getting Log Entries####
+####5) Getting Log Entries####
 
 An entry in a list is one log entry, in other words, a line in a log file. Each entry consists of the following variables. 
 
