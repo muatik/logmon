@@ -133,7 +133,7 @@ class Project
 	 * @access public
 	 * @return boolean
 	 */
-	public function isValid() {
+	public function validate() {
 		$properties = $this->properties;
 		unset($properties['_id']);
 

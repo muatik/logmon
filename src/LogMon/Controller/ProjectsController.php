@@ -34,8 +34,10 @@ class ProjectsController implements ControllerProviderInterface
 
 		try	{
 			$newProject->initFromJson($app['request']->getContent());
-			$projects->register($newProject);
+			$newProject->logConfig = logConfigManager::build($newProject);
+
 			// TODO: return more appropriate return message
+			$projects->register($newProject);
 			$return = 'registered';
 		} catch (\Exception $e) {
 			$return = $e->getMessage();
