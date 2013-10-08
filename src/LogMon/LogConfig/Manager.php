@@ -1,119 +1,50 @@
 <?php
+namespace LogMon\LogConfig;
 
-class LogConfigManager
+class Manager
 {
-	public static function build(Project $project)
-	{
-		// projenin konfiğini okur, doğrular ve işlemi yapar.
-	}
-}
-
-
-abstract class LogConfigBase
-{
-	private $storageType;
-
-	public function validate() 
-	{
-		// entity validation
-	}
-
 	/**
-	 * checks whether the log source is readable or not.
-	 * If not, an exception will be thrown. Otherwise it returns true.
+	 * builds a logConfig object from raw object
 	 * 
+	 * @param \Silex\Application $app 
+	 * @param object $project 
+	 * @static
 	 * @access public
-	 * @return boolean
+	 * @return LogMon\LogConfig\IConfig
+	 * @trows If storage type is unknown or logConfig cannot be created.
 	 */
-	public function test() 
+	public static function build(\Silex\Application $app, $rawConfig)
 	{
-		// will be implemented in each individual config type class.
-	}
-
-
-	/**
-	 * the setter method which handles the properties of the project.
-	 * 
-	 * @param string $name 
-	 * @param mixed $value 
-	 * @access public
-	 * @return void
-	 */
-	public function __set($name, $value) {
+		if (!is_object($rawConfig)) 
+			throw new \InvalidArgumentException(
+				"The argument 'project' must be an object.");
 		
-		if (array_key_exists($name, $this->properties)) {
-			$method = 'set'.ucfirst($name);
-			try {
-				call_user_func(array($this, $method), $value);
-			} catch(InvalidArgumentException $e) {
-				throw $e;
-			}
-		} 
-		
-	}
-	
-	/**
-	 * the getter which handles the properties of the project.
-	 * 
-	 * @param string $name 
-	 * @access public
-	 * @return void
-	 */
-	public function __get($name) {
-		if (isset($this->properties[$name])) {
-			return $this->properties[$name];
+		switch ($rawConfig->storageType) {
+			case 'textFile':
+				$logConfig = new ConfigTextFile($app);
+				break;
+			case 'mongodb':
+				$logConfig = new ConfigMongodb($app);
+				break;
+			case 'mysql':
+				$logConfig = new ConfigMysql($app);
+				break;
+			default:
+				throw new \Exception(
+					sprintf("The storage type is unknown: '%s'"
+						, $rawConfig->storageType)
+				);
 		}
-		
-		throw new InvalidArgumentException(
-			sprintf('Property of project "%s" is not defined.', $name)
-		);
+
+		unset($rawConfig->storageType);
+		foreach($rawConfig as $parameter => $value)
+			$logConfig->$parameter = $value;
+
+		try{
+			$logConfig->test();
+			return $logConfig;
+		} catch (\Exception $e) {
+			throw $e;
+		}
 	}
 }
-
-class LogConfigMysql extends LogConfigBase
-{
-
-}
-
-class LogConfigMongoDB extends LogConfigBase
-{
-
-}
-
-class LogConfigText extends LogConfigBase
-{
-	/**
-	 * the file system path of the log
-	 * 
-	 * @var string
-	 * @access private
-	 */
-	private $properties = array(
-		'filePath' => ''
-	);
-	
-	/**
-	 * checks whether the log file does exists and is readable.
-	 * If not, an exception will be thrwon.
-	 *
-	 * @access public
-	 * @return boolean
-	 */
-	public function test() 
-	{
-		$this->validate();
-		if (file_exists($this->filePath))
-			throw new \Exception(
-				sprintf('The file "%s" does not exists.', $this->filePath)
-			);
-		
-		if (is_readable($this->filePath))
-			throw new \Exception(
-				sprintf('The file "%s" is not readable.', $this->filePath)
-			);
-
-		return $true;
-	}
-}
-
-?>

@@ -1,17 +1,33 @@
 <?php
 namespace LogMon\LogConfig;
 
-class LogConfigText extends ConfigBase
+/**
+ * The class ConfigTextFile manages log configurations in plain files.
+ * 
+ * @uses Base
+ * @package LogMon\LogConfig
+ */
+class ConfigTextFile 
+	extends Base 
+	implements IConfig
 {
-	private $storageType = 'localFile';
+
+	/**
+	 * storage type
+	 *
+	 * @overrides 
+	 * @var string
+	 * @access protected
+	 */
+	protected $storageType = 'localFile';
 
 	/**
 	 * the file system path of the log
 	 * 
 	 * @var array
-	 * @access private
+	 * @access protected
 	 */
-	private $properties = array(
+	protected $properties = array(
 		'filePath' => ''
 	);
 
@@ -20,13 +36,14 @@ class LogConfigText extends ConfigBase
 	 * If the given path is not valid, an exception will be thrown.
 	 * 
 	 * @param string $filePath 
-	 * @access private
+	 * @access public
 	 * @return void
+	 * @thrwos \Exception
 	 */
-	private function setFilePath($filePath)
+	public function setFilePath($filePath)
 	{
 		if (mb_strlen($filePath) == 0)
-			throw new InvalidArgumentException('The file path cannot be empty.');
+			throw new \InvalidArgumentException('The file path cannot be empty.');
 
 		$this->properties['filePath'] = $filePath;
 	}
@@ -41,16 +58,18 @@ class LogConfigText extends ConfigBase
 	public function test() 
 	{
 		$this->validate();
-		if (file_exists($this->filePath))
+		$filePath = $this->properties['filePath'];
+		
+		if (!file_exists($filePath))
 			throw new \Exception(
-				sprintf('The file "%s" does not exists.', $this->filePath)
+				sprintf('The file "%s" does not exists.', $filePath)
 			);
 		
-		if (is_readable($this->filePath))
+		if (!is_readable($filePath))
 			throw new \Exception(
-				sprintf('The file "%s" is not readable.', $this->filePath)
+				sprintf('The file "%s" is not readable.', $filePath)
 			);
 
-		return $true;
+		return true;
 	}
 }

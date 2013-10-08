@@ -1,17 +1,33 @@
 <?php
 namespace LogMon\LogConfig;
 
-class ConfigMongodb extends ConfigBase
+/**
+ * The class ConfigMongodb manages log configurations on mongodb database.
+ * 
+ * @uses Base
+ * @package LogMon\LogConfig
+ */
+class ConfigMongodb
+	extends Base 
+	implements IConfig
 {
-	private $storageType = 'mongodb';
 
 	/**
-	 * the file system path of the log
+	 * storage type
+	 *
+	 * @overrides
+	 * @var string
+	 * @access protected
+	 */
+	protected $storageType = 'mongodb';
+
+	/**
+	 * the configuration of mongodb connection
 	 * 
 	 * @var array
-	 * @access private
+	 * @access protected
 	 */
-	private $properties = array(
+	protected $properties = array(
 		'host' => '',
 		'port' => '27017',
 		'username' => '',
@@ -20,49 +36,94 @@ class ConfigMongodb extends ConfigBase
 		'collectionName' => ''
 	);
 
-	private function setHost($host) 
+
+	/**
+	 * sets host address
+	 * 
+	 * @param string $host 
+	 * @access protected
+	 * @return void
+	 */
+	protected function setHost($host) 
 	{
 		$this->setParameter('host', $host);
 	}
 
-	private function setPort($host) 
+	/**
+	 * sets port number
+	 * 
+	 * @param int $port 
+	 * @access protected
+	 * @return void
+	 */
+	protected function setPort($port) 
 	{
-		$this->setParameter('port', $host);
+		$this->setParameter('port', $port);
 	}
 
-	private function setUsername($host) 
+	/**
+	 * sets username
+	 * 
+	 * @param string $username
+	 * @access protected
+	 * @return void
+	 */
+	protected function setUsername($username) 
 	{
-		$this->setParameter('username', $host);
+		$this->setParameter('username', $username);
 	}
 
-	private function setPassword($host) 
+	/**
+	 * sets password
+	 * 
+	 * @param string $password
+	 * @access protected
+	 * @return void
+	 */
+	protected function setPassword($password) 
 	{
-		$this->setParameter('password', $host);
+		$this->setParameter('password', $password);
 	}
 
-	private function setDatabaseName($host) 
+	/**
+	 * sets database name
+	 * 
+	 * @param string $databaseName
+	 * @access protected
+	 * @return void
+	 */
+	protected function setDatabaseName($databaseName) 
 	{
-		$this->setParameter('databaseName', $host);
+		$this->setParameter('databaseName', $databaseName);
 	}
 
-	private function setCollectionName($host) 
+	/**
+	 * sets collection/table name
+	 * 
+	 * @param string $collectionName
+	 * @access protected
+	 * @return void
+	 */
+	protected function setCollectionName($collectionName) 
 	{
-		$this->setParameter('collectionName', $host);
+		$this->setParameter('collectionName', $collectionName);
 	}
-
+	
+	
 	/**
 	 * sets the file system path of the log.
 	 * If the given path is not valid, an exception will be thrown.
 	 * 
 	 * @param string $filePath 
-	 * @access private
+	 * @access protected
 	 * @return void
+	 * @throws \Exception
 	 */
-	private function setParameter($parameter, $value)
+	protected function setParameter($parameter, $value)
 	{
 		if (mb_strlen($value) == 0)
-			throw new InvalidArgumentException(
-				sprintf('The config parameter %s cannot be empty.', $value)
+			throw new \InvalidArgumentException(
+				sprintf('The config parameter "%s" cannot be empty.', $parameter)
 			);
 
 		$this->properties[$parameter] = $value;
@@ -82,13 +143,14 @@ class ConfigMongodb extends ConfigBase
 		$connParams = array(
 			'host' => $conf['host'],
 			'port' => $conf['port'],
+			'auth' => true,
 			'username' => $conf['username'],
 			'password' => $conf['password'],
-			'database' => $conf['database']
+			'database' => $conf['databaseName']
 		);
-
+		
 		// test connectivity through the doctrine's dbal
 		$conn = $this->app['db.mongodb.getConnection']($connParams);
-		return $conn->isConnected();
+		return $conn->connect();
 	}
 }

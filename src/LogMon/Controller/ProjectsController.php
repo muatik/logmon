@@ -33,8 +33,19 @@ class ProjectsController implements ControllerProviderInterface
 		$newProject = $app['project.factory'];
 
 		try	{
-			$newProject->initFromJson($app['request']->getContent());
-			$newProject->logConfig = logConfigManager::build($newProject);
+			$jsonProject = json_decode($app['request']->getContent());
+			if (!isset($jsonProject->logConfig))
+				throw new \Exception("The paramter 'logConfig' not found in the request.");
+
+			if (!is_object($jsonProject->logConfig))
+				throw new \Exception("The paramter 'logConfig' is not valid.");
+
+			$jsonProject->logConfig = \LogMon\LogConfig\Manager::build(
+				$app, 
+				$jsonProject->logConfig
+			);
+
+			$newProject->initFromObject($jsonProject);
 
 			// TODO: return more appropriate return message
 			$projects->register($newProject);

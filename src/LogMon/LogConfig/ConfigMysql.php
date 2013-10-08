@@ -1,54 +1,114 @@
 <?php
 namespace LogMon\LogConfig;
 
-class ConfigMysql extends ConfigBase
+/**
+ * The class ConfigMysql manages log configurations on mysql database.
+ * 
+ * @uses Base
+ * @package LogMon\LogConfig
+ */
+class ConfigMysql
+   	extends Base
+	implements IConfig
 {
-	private $storageType = 'mysql';
 
 	/**
-	 * the file system path of the log
+	 * storage type
+	 *
+	 * @overrides
+	 * @var string
+	 * @access protected
+	 */
+	protected $storageType = 'mysql';
+
+	/**
+	 * the configuration of mysql connection
 	 * 
 	 * @var array
-	 * @access private
+	 * @access protected
 	 */
-	private $properties = array(
+	protected $properties = array(
 		'host' => '',
 		'port' => '3306',
 		'username' => '',
 		'password' => '',
 		'databaseName' => '',
-		'collectionName' => ''
+		'collectionName' => '' // table name
 	);
 
-	private function setHost($host) 
+
+	/**
+	 * sets host address
+	 * 
+	 * @param string $host 
+	 * @access protected
+	 * @return void
+	 */
+	protected function setHost($host) 
 	{
 		$this->setParameter('host', $host);
 	}
 
-	private function setPort($host) 
+	/**
+	 * sets port number
+	 * 
+	 * @param int $port 
+	 * @access protected
+	 * @return void
+	 */
+	protected function setPort($port) 
 	{
-		$this->setParameter('host', $host);
+		$this->setParameter('port', $port);
 	}
 
-	private function setUsername($host) 
+	/**
+	 * sets username
+	 * 
+	 * @param string $username
+	 * @access protected
+	 * @return void
+	 */
+	protected function setUsername($username) 
 	{
-		$this->setParameter('host', $host);
+		$this->setParameter('username', $username);
 	}
 
-	private function setPassword($host) 
+	/**
+	 * sets password
+	 * 
+	 * @param string $password
+	 * @access protected
+	 * @return void
+	 */
+	protected function setPassword($password) 
 	{
-		$this->setParameter('host', $host);
+		$this->setParameter('password', $password);
 	}
 
-	private function setDatabaseName($host) 
+	/**
+	 * sets database name
+	 * 
+	 * @param string $databaseName
+	 * @access protected
+	 * @return void
+	 */
+	protected function setDatabaseName($databaseName) 
 	{
-		$this->setParameter('host', $host);
+		$this->setParameter('databaseName', $databaseName);
 	}
 
-	private function setCollectionName($host) 
+	/**
+	 * sets collection/table name
+	 * 
+	 * @param string $collectionName
+	 * @access protected
+	 * @return void
+	 */
+	protected function setCollectionName($collectionName) 
 	{
-		$this->setParameter('host', $host);
+		$this->setParameter('collectionName', $collectionName);
 	}
+
 
 	/**
 	 * sets the file system path of the log.
@@ -57,12 +117,13 @@ class ConfigMysql extends ConfigBase
 	 * @param string $filePath 
 	 * @access private
 	 * @return void
+	 * @throws \Exception
 	 */
 	private function setParameter($parameter, $value)
 	{
 		if (mb_strlen($value) == 0)
-			throw new InvalidArgumentException(
-				sprintf('The config parameter %s cannot be empty.', $value)
+			throw new \InvalidArgumentException(
+				sprintf('The config parameter "%s" cannot be empty.', $parameter)
 			);
 
 		$this->properties[$parameter] = $value;
@@ -82,14 +143,21 @@ class ConfigMysql extends ConfigBase
 		$connParams = array(
 			'host' => $conf['host'],
 			'port' => $conf['port'],
-			'username' => $conf['username'],
+			'user' => $conf['username'],
 			'password' => $conf['password'],
-			'dbname' => $conf['database'],
+			'dbname' => $conf['databaseName'],
 			'driver' => 'pdo_mysql'
 		);
 
 		// test connectivity through the doctrine's dbal
 		$conn = $this->app['db.mysql.getConnection']($connParams);
-		return $conn->isConnected();
+		$conn->connect();
+
+		$qb = $conn->createQueryBuilder();
+		$qb->select('*')
+			->from($conf['collectionName'], 't')
+			->setMaxResults(1);
+		$qb->execute();
+		return true;
 	}
 }

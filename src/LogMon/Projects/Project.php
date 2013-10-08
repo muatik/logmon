@@ -1,5 +1,5 @@
 <?php
-namespace LogMon\Model;
+namespace LogMon\Projects;
 
 /**
  * The Project Entity which represents an individual, user defined project.
@@ -160,27 +160,23 @@ class Project
 
 
 	/**
-	 * Fiils the object with the given json data. This method travers the given
+	 * Fiils the object with the given raw data. This method travers the given
 	 * json data and matched elements with the properties will be assigned.
 	 *
-	 * $json = array(
-	 *   '_id' => '23ad12', 
-	 *   'name' => 'projectname', 
-	 *   'codeName' => 'codename',
-	 *   'logConfig' => object
+	 * $rawObject= stdClass(
+	 *   '_id' = '23ad12', 
+	 *   'name' = 'projectname', 
+	 *   'codeName' = 'codename',
+	 *   'logConfig' = Logmon\LogConfig\IConfig
 	 * )
 	 * 
-	 * @param string $json 
+	 * @param stdClass $rawObject
 	 * @access public
 	 * @return boolean
 	 */
-	public function initFromJson($json) {
+	public function initFromObject($rawObject) {
 		
-		$json = json_decode($json, true);
-		if (!is_array($json))
-			throw new \Exception('The given json could not be decoded as an array.');
-			
-		foreach($json as $key => $value)
+		foreach($rawObject as $key => $value)
 			if (array_key_exists($key, $this->properties))
 				$this->$key = $value;
 

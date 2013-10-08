@@ -54,19 +54,19 @@ $app->register(new Silex\Provider\HttpCacheServiceProvider(), array(
 	'http_cache.cache_dir' => ROOT.'/temp/http'
 ));
 
-$app['db.mysql.getConnection'] = $app->register(function($app) {
+$app['db.mysql.getConnection'] = function($app) {
 	return function($connParams) {
 		return \Doctrine\DBAL\DriverManager::getConnection($connParams);
 	};
-});
+};
 
-$app['db.mongodb.getConnection'] = $app->register(function($app) {
+$app['db.mongodb.getConnection'] = function($app) {
 	return function($connParams) {
 
 		if (isset($connParams['auth']) && $connParams['auth']) {
 			$connString = sprintf(
 				'mongodb://%s:%s@%s/%s',
-				$connParams['user'],
+				$connParams['username'],
 				$connParams['password'],
 				$connParams['host'],
 				$connParams['database']
@@ -80,12 +80,12 @@ $app['db.mongodb.getConnection'] = $app->register(function($app) {
 		}
 
 		return new \Doctrine\MongoDB\Connection($connString);
-	}
-});
+	};
+};
 
 $app['db.mysql'] = $app->share(function($app) {
 	$connParams = $app['db.config.mysql'];
-	return $app['db.driverManager.getConnection']($connParams);
+	return $app['db.mysql.getConnection']($connParams);
 });
 
 $app['db.mongodb'] = $app->share(function($app) {
@@ -96,26 +96,22 @@ $app['db.mongodb'] = $app->share(function($app) {
 });
 
 $app['db.mysql.collection'] = function($app) {
-	return new LogMon\Manager\MysqlDBCollection($app['db.mysql']);
+	return new LogMon\Databases\MysqlDBCollection($app['db.mysql']);
 };
 
 $app['db.mongodb.collection'] = function($app) {
-	return new LogMon\Manager\MongoDBCollection($app['db.mongodb']);
+	return new LogMon\Databases\MongoDBCollection($app['db.mongodb']);
 };
 
 
-
-
 $app['projects'] = $app->share(function($app) {
-	return new LogMon\Manager\Projects($app['db.mysql.collection']);
+	return new LogMon\Projects\Manager($app['db.mysql.collection']);
 });
 
 $app['project.factory'] = function($app) {
-	return new LogMon\Model\Project();
+	return new LogMon\Projects\Project();
 };
 
 require ROOT.'src/LogMon/router.php';
 
 return $app;
-
-?>

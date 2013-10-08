@@ -1,15 +1,15 @@
 <?php
 
-namespace LogMon\Manager;
+namespace LogMon\Projects;
 
-use LogMon\Model\Project;
+use LogMon\Databases\IDBCollection;
 
 /**
  * The class Projects manages CRUD operations for projects.
  * 
  * @author Tobias Schlitt <toby@php.net> 
  */
-class Projects
+class Manager
 {
 	
 	/**
@@ -30,7 +30,6 @@ class Projects
 	
 	public function __construct(IDBCollection $db) {
 		$db->setCollection($this->collection);
-		$db->safe = true;
 		$this->db = $db;
 	}
 
@@ -44,7 +43,7 @@ class Projects
 	public function register(Project $project) {
 		
 		try {
-			$project->isValid();
+			$project->validate();
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -73,6 +72,12 @@ class Projects
 	 * @return boolean
 	 */
 	public function update(Project $project) {
+		try {
+			$project->validate();
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
 		$object = $project->getProperties();
 		$id = $object['_id'];
 		unset($object['_id']);

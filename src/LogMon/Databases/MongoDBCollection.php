@@ -1,8 +1,6 @@
 <?php
-namespace LogMon\Manager;
+namespace LogMon\Databases;
 
-use LogMon\Manager\IDBCollection;
-use LogMon\Manager\DBResult;
 use Doctrine\ORM\Query;
 
 class MongoDBCollection implements IDBCollection

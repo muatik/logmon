@@ -1,5 +1,5 @@
 <?php
-namespace LogMon\Manager;
+namespace LogMon\Databases;
 
 interface IDBCollection
 {

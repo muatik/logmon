@@ -1,5 +1,5 @@
 <?php
-
+die('K');
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Silex\Application;
@@ -10,6 +10,10 @@ require_once __DIR__ . '/../resources/config/default.php';
 
 $app = require __DIR__ . '/../src/app.php';
 
+
+$app->get('/test/logConfig/textFile', function(Application $app){
+	$a = new LogConfig\ConfigTextFile($app);
+});
 
 $app->get('/test/insert', function(Application $app){
 

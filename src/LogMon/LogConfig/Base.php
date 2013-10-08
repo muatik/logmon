@@ -1,15 +1,40 @@
 <?php
 namespace LogMon\LogConfig;
 
-abstract class ConfigBase
+/**
+ * Base 
+ * 
+ * @abstract
+ * @package LogMong\LogConfig;
+ */
+abstract class Base
 {
-	private $storageType;
+	/**
+	 * storage type 
+	 * This variable will be overriden in derived classes.
+	 * 
+	 * @var mixed
+	 * @access protected
+	 */
+	protected $storageType;
 
-	private $properties = array();
+	/**
+	 * the configuration properties
+	 * 
+	 * @var array
+	 * @access protected
+	 */
+	protected $properties = array();
 	
-	private $app;
+	/**
+	 * the dependency container object 
+	 *
+	 * @var Silex\Application
+	 * @access protected
+	 */
+	protected $app;
 	
-	public function __construct(Silex\Application $app) 
+	public function __construct(\Silex\Application $app) 
 	{
 		$this->app = $app;
 	}
@@ -20,10 +45,11 @@ abstract class ConfigBase
 	 *
 	 * @access public
 	 * @return boolean
+	 * @throws \Exception
 	 */
 	public function validate()
 	{
-		foreach($properties as $k => $i) {
+		foreach($this->properties as $k => $i) {
 			if (empty($i))
 				throw new \Exception(
 					sprintf('The value of "%s" is null. This is not acceptable.', $k)
@@ -52,6 +78,7 @@ abstract class ConfigBase
 	 * @param mixed $value 
 	 * @access public
 	 * @return void
+	 * @throws \Exception
 	 */
 	public function __set($name, $value) 
 	{
@@ -59,7 +86,7 @@ abstract class ConfigBase
 			$method = 'set'.ucfirst($name);
 			try {
 				call_user_func(array($this, $method), $value);
-			} catch(InvalidArgumentException $e) {
+			} catch(\InvalidArgumentException $e) {
 				throw $e;
 			}
 		} 
@@ -71,6 +98,7 @@ abstract class ConfigBase
 	 * @param string $name 
 	 * @access public
 	 * @return void
+	 * @throw \InvalidArgumentException
 	 */
 	public function __get($name) 
 	{
@@ -81,5 +109,15 @@ abstract class ConfigBase
 		throw new InvalidArgumentException(
 			sprintf('Property of project "%s" is not defined.', $name)
 		);
+	}
+
+	/**
+	 * returns a readable form of the logConfig object 
+	 * 
+	 * @access public
+	 * @return string
+	 */
+	public function __toString() {
+		return json_encode($this->properties);
 	}
 }
