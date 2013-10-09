@@ -17,7 +17,7 @@ class Manager
 	{
 		if (!is_object($rawConfig)) 
 			throw new \InvalidArgumentException(
-				"The argument 'project' must be an object.");
+				"The argument 'rawConfig' must be an object. It is:".$rawConfig);
 		
 		switch ($rawConfig->storageType) {
 			case 'textFile':
@@ -37,8 +37,7 @@ class Manager
 		}
 
 		unset($rawConfig->storageType);
-		foreach($rawConfig as $parameter => $value)
-			$logConfig->$parameter = $value;
+		$logConfig->loadFromJson(json_encode($rawConfig));
 
 		try{
 			$logConfig->test();

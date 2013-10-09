@@ -7,7 +7,7 @@ namespace LogMon\LogConfig;
  * @abstract
  * @package LogMong\LogConfig;
  */
-abstract class Base
+abstract class Base	implements \JsonSerializable
 {
 	/**
 	 * storage type 
@@ -59,7 +59,7 @@ abstract class Base
 	}
 
 	/**
-	 * checks whether the log source is readable or not.
+	 * checks whether the log source is accesssible or not
 	 * If not, an exception will be thrown. Otherwise it returns true.
 	 * 
 	 * @access public
@@ -67,7 +67,7 @@ abstract class Base
 	 */
 	public function test() 
 	{
-		// will be implemented in each individual config type class.
+		return $this->getConnection();
 	}
 
 
@@ -106,10 +106,11 @@ abstract class Base
 			return $this->properties[$name];
 		}
 		
-		throw new InvalidArgumentException(
+		throw new \InvalidArgumentException(
 			sprintf('Property of project "%s" is not defined.', $name)
 		);
 	}
+
 
 	/**
 	 * returns a readable form of the logConfig object 
@@ -117,7 +118,62 @@ abstract class Base
 	 * @access public
 	 * @return string
 	 */
-	public function __toString() {
-		return json_encode($this->properties);
+	public function __toString() 
+	{
+		return $this->jsonSerialize($this);
+	}
+
+	/**
+	 * the implementation of jsonSerializable interface
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function jsonSerialize()
+	{
+		return $this->export();
+	}
+	
+	/**
+	 * exports the object's properties 
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function export()
+	{
+		$data = $this->properties;
+		$data['storageType'] = $this->storageType;
+		return $data;
+	}
+
+	/**
+	 * loads this object's properties from the json.
+	 * This is useful, for example, when you need wake up this object
+	 * from json string. It is legiimate to call this method with the value 
+	 * returned from __toString(). 
+	 *
+	 * <code>
+	 * 	$jsonObject = (string) $logConfig(); // calls __toString()
+	 * 	$newLogConfig->loadFromJson($jsonObject);
+	 * </code>
+	 * 
+	 * @param string $jsonObject 
+	 * @access public
+	 * @return void
+	 * @throws \InvalidArgumentException If the json object does not include required parameters.
+	 */
+	public function loadFromJson($jsonObject)
+	{
+		$jsonObject = json_decode($jsonObject);
+		foreach ($this->properties as $parameter => $value) {
+			if (!isset($jsonObject->$parameter))
+				throw new \InvalidArgumentException(sprintf(
+					"The given configuration does not include the required prarameter '%s'",
+				   	$parameter
+				));
+
+			$this->properties[$parameter] = $jsonObject->$parameter;
+		}
 	}
 }

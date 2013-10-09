@@ -3,6 +3,7 @@
 namespace LogMon\Projects;
 
 use LogMon\Databases\IDBCollection;
+use LogMon\LogConfig;
 
 /**
  * The class Projects manages CRUD operations for projects.
@@ -27,10 +28,35 @@ class Manager
 	 * @access private
 	 */
 	private $db;
-	
-	public function __construct(IDBCollection $db) {
+
+	/**
+	 * the dependency container object
+	 * 
+	 * @var \Silex\Application $app
+	 * @access private
+	 */
+	private $app;
+
+
+	public function __construct(\Silex\Application $app, IDBCollection $db) 
+	{
+		$this->app = $app;
 		$db->setCollection($this->collection);
 		$this->db = $db;
+	}
+
+	/**
+	 * serialize the parameters of the log configuration to be convenient 
+	 * for different supported storage types. So, while reading 
+	 * from the storage, this field must be converted to a logConfig object.
+	 * 
+	 * @param \LogMon\LogConfig\IConfig $logConfig 
+	 * @access private
+	 * @return json
+	 */
+	private function serializeLogConfig(\LogMon\LogConfig\IConfig $logConfig)
+	{
+		return json_encode($logConfig);
 	}
 
 	/**
@@ -51,6 +77,8 @@ class Manager
 		$object = $project->getProperties();
 		if ($object['_id'] == null)
 			unset($object['_id']);
+		
+		$object['logConfig'] = $this->serializeLogConfig($object['logConfig']);
 
 		$result = $this->db->insert($object);
 		if ($result->success != true)
@@ -82,6 +110,8 @@ class Manager
 		$id = $object['_id'];
 		unset($object['_id']);
 		
+		$object['logConfig'] = $this->serializeLogConfig($object['logConfig']);
+
 		$criteria = array(
 			array('eq', '_id', $id)
 		);
@@ -149,6 +179,14 @@ class Manager
 			foreach($i as $key => $value)
 				$p->$key = $value;
 
+			// in view of storing the logConfig as a json string, we need to 
+			// create an appropriate logConfig object from this json.
+			// this is something like waking up the logConfig object.
+			$p->logConfig = \LogMon\LogConfig\Manager::build(
+				$this->app, 
+				json_decode($p->logConfig)
+			);
+
 			$projects[] = $p;
 		}
 
@@ -156,4 +194,3 @@ class Manager
 	}
 }
 
-?>

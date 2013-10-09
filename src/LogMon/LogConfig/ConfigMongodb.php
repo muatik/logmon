@@ -111,32 +111,13 @@ class ConfigMongodb
 	
 	
 	/**
-	 * sets the file system path of the log.
-	 * If the given path is not valid, an exception will be thrown.
-	 * 
-	 * @param string $filePath 
-	 * @access protected
-	 * @return void
-	 * @throws \Exception
-	 */
-	protected function setParameter($parameter, $value)
-	{
-		if (mb_strlen($value) == 0)
-			throw new \InvalidArgumentException(
-				sprintf('The config parameter "%s" cannot be empty.', $parameter)
-			);
-
-		$this->properties[$parameter] = $value;
-	}
-
-	/**
-	 * checks whether the log file does exists and is readable.
-	 * If not, an exception will be thrwon.
+	 * returns a connection resource of the storage
+	 * If fails, an exception will be thrwon.
 	 *
 	 * @access public
-	 * @return boolean
+	 * @return \Doctrine\DBAL\Connection
 	 */
-	public function test() 
+	public function getConnection() 
 	{
 		$this->validate();
 		$conf = $this->properties;

@@ -35,7 +35,8 @@ class Project
 	 * @access public
 	 * @return void
 	 */
-	public function __set($name, $value) {
+	public function __set($name, $value) 
+	{
 		
 		if (array_key_exists($name, $this->properties)) {
 			$method = 'set'.ucfirst($name);
@@ -55,12 +56,13 @@ class Project
 	 * @access public
 	 * @return void
 	 */
-	public function __get($name) {
+	public function __get($name) 
+	{
 		if (isset($this->properties[$name])) {
 			return $this->properties[$name];
 		}
 		
-		throw new InvalidArgumentException(
+		throw new \InvalidArgumentException(
 			sprintf('Property of project "%s" is not defined.', $name)
 		);
 	}
@@ -72,7 +74,8 @@ class Project
 	 * @access private
 	 * @return boolean
 	 */
-	private function set_Id($id) {
+	private function set_Id($id) 
+	{
 		if (!empty($id)) {
 			$this->properties['_id'] = $id;
 			return true;
@@ -88,7 +91,8 @@ class Project
 	 * @access private
 	 * @return boolean
 	 */
-	private function setName($name) {
+	private function setName($name) 
+	{
 		if (mb_strlen(trim($name)) > 1) {
 			$this->properties['name'] = $name;
 			return true;
@@ -105,7 +109,8 @@ class Project
 	 * @access private
 	 * @return boolean
 	 */
-	private function setCodeName($codeName) {
+	private function setCodeName($codeName)
+	{
 		if (mb_strlen(trim($codeName)) > 1) {
 			$this->properties['codeName'] = $codeName;
 			return true;
@@ -122,7 +127,8 @@ class Project
 	 * @access private
 	 * @return boolean
 	 */
-	private function setLogConfig($logConfig) {
+	private function setLogConfig($logConfig)
+	{
 		// TODO: logConfig must be validated before assignment
 		$this->properties['logConfig'] = $logConfig;
 	}
@@ -174,8 +180,8 @@ class Project
 	 * @access public
 	 * @return boolean
 	 */
-	public function initFromObject($rawObject) {
-		
+	public function initFromObject($rawObject)
+	{
 		foreach($rawObject as $key => $value)
 			if (array_key_exists($key, $this->properties))
 				$this->$key = $value;
@@ -184,4 +190,3 @@ class Project
 	}
 
 }
-?>

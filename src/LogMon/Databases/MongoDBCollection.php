@@ -15,7 +15,8 @@ class MongoDBCollection implements IDBCollection
 	 * @access private
 	 */
 	private $collection;
-	
+
+	private $isSafe = true;
 
 	/**
 	 * makes the given criteria fit to mongodb's query language.
@@ -55,6 +56,10 @@ class MongoDBCollection implements IDBCollection
 			$field = $expr[1];
 			$value = $expr[2];
 			$expr = $expressions[$expr[0]];
+
+			if ($field == '_id')
+				$value = new \MongoID($value);
+
 			$queryBuilder->field($field)->$expr($value);
 		}
 	}
@@ -100,7 +105,7 @@ class MongoDBCollection implements IDBCollection
 		try {
 			$this->collection->insert(
 				$object, 
-				array('safe' => $this->safe)
+				array('safe' => $this->isSafe)
 			);
 			$result->success = true;
 		} catch (\MongoCursorException $e) {
@@ -132,6 +137,7 @@ class MongoDBCollection implements IDBCollection
 
 			self::criteriaToDoctrineExp($queryBuilder, $criteria);
 			$q = $queryBuilder->getQuery();
+			print_r($q->getQuery());
 			$q->execute();
 			$result->success = true;
 		} catch (\MongoCursorException $e) {

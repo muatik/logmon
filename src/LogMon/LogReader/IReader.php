@@ -3,5 +3,7 @@ namespace LogMon\LogReader;
 
 interface IReader
 {
-	public function fetch() {}
+	public function __construct(LogConfig\IConfig $logConfig);
+	public function initialize();
+	public function fetch();
 }

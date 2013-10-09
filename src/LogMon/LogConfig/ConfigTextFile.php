@@ -49,13 +49,14 @@ class ConfigTextFile
 	}
 
 	/**
-	 * checks whether the log file does exists and is readable.
-	 * If not, an exception will be thrwon.
+	 * creates a connection resource of the file.
+	 * If fails, an exception will be thrwon.
 	 *
 	 * @access public
 	 * @return boolean
+	 * @throws \Exception if the file does not exists or is inacce
 	 */
-	public function test() 
+	public function getConnection() 
 	{
 		$this->validate();
 		$filePath = $this->properties['filePath'];
@@ -69,7 +70,24 @@ class ConfigTextFile
 			throw new \Exception(
 				sprintf('The file "%s" is not readable.', $filePath)
 			);
+		
+		return fread($filePath, 'r');
+	}
 
+	/**
+	 * checks whether the log file does exists and is readable.
+	 * additionally, try to open the file in read(r) mode.
+	 * If fails, an exception will be thrown.
+	 * 
+	 * @access public
+	 * @return void
+	 * @overrides
+	 */
+	public function test()
+	{
+		$conn = parent::test();
+		fclose($conn);
 		return true;
 	}
+
 }

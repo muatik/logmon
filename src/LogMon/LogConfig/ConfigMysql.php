@@ -130,13 +130,13 @@ class ConfigMysql
 	}
 
 	/**
-	 * checks whether the log file does exists and is readable.
-	 * If not, an exception will be thrwon.
+	 * returns a connection resource of the storage
+	 * If fails, an exception will be thrwon.
 	 *
 	 * @access public
-	 * @return boolean
+	 * @return Doctrine\DBAL\Connection
 	 */
-	public function test() 
+	public function getConnection() 
 	{
 		$this->validate();
 		$conf = $this->properties;
@@ -152,10 +152,24 @@ class ConfigMysql
 		// test connectivity through the doctrine's dbal
 		$conn = $this->app['db.mysql.getConnection']($connParams);
 		$conn->connect();
+		return $conn;
+	}
 
+	/**
+	 * checks whether the log source is accesssible or not
+	 * additionally, checks whether the table does exists or not.
+	 * If not, an exception will be thrown. Otherwise it returns true.
+	 * 
+	 * @overrides 
+	 * @access public
+	 * @return void
+	 */
+	public function test() 
+	{
+		$conn = parent::test();
 		$qb = $conn->createQueryBuilder();
 		$qb->select('*')
-			->from($conf['collectionName'], 't')
+			->from($this->properties['collectionName'], 't')
 			->setMaxResults(1);
 		$qb->execute();
 		return true;
