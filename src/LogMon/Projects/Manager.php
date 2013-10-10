@@ -56,7 +56,7 @@ class Manager
 	 */
 	private function serializeLogConfig(\LogMon\LogConfig\IConfig $logConfig)
 	{
-		return json_encode($logConfig);
+		return json_encode($logConfig->export());
 	}
 
 	/**
@@ -74,7 +74,7 @@ class Manager
 			throw $e;
 		}
 
-		$object = $project->getProperties();
+		$object = $project->export();
 		if ($object['_id'] == null)
 			unset($object['_id']);
 		
@@ -106,7 +106,7 @@ class Manager
 			throw $e;
 		}
 
-		$object = $project->getProperties();
+		$object = $project->export();
 		$id = $object['_id'];
 		unset($object['_id']);
 		
@@ -175,17 +175,24 @@ class Manager
 
 		foreach($records as $i) {
 			
-			$p = new Project();
-			foreach($i as $key => $value)
-				$p->$key = $value;
-
 			// in view of storing the logConfig as a json string, we need to 
 			// create an appropriate logConfig object from this json.
 			// this is something like waking up the logConfig object.
-			$p->logConfig = \LogMon\LogConfig\Manager::build(
-				$this->app, 
-				json_decode($p->logConfig)
-			);
+			try {
+				$i['logConfig'] = \LogMon\LogConfig\Manager::build(
+					$this->app, 
+					json_decode($i['logConfig'])
+				);
+			} catch (\Exception $e) {
+				throw new \Exception(sprintf(
+					"The project '%s' is corrupted." . $e->getMessage(),
+					$i['codeName']
+				));
+			}
+
+			$p = new Project();
+			foreach($i as $key => $value) 
+				$p->$key = $value;
 
 			$projects[] = $p;
 		}

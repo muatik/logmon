@@ -16,8 +16,10 @@ class Manager
 	public static function build(\Silex\Application $app, $rawConfig)
 	{
 		if (!is_object($rawConfig)) 
-			throw new \InvalidArgumentException(
-				"The argument 'rawConfig' must be an object. It is:".$rawConfig);
+			throw new \InvalidArgumentException(sprintf(
+				"The log config cannot be built because the argument does not seem like an object. It is:'%s'",
+				$rawConfig
+			));
 		
 		switch ($rawConfig->storageType) {
 			case 'textFile':

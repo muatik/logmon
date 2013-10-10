@@ -123,11 +123,11 @@ class Project
 	/**
 	 * sets the log configuration of the project.
 	 * 
-	 * @param mixed $logConfig 
+	 * @param LogMon\LogConfig\IConfig $logConfig 
 	 * @access private
 	 * @return boolean
 	 */
-	private function setLogConfig($logConfig)
+	private function setLogConfig(\LogMon\LogConfig\IConfig $logConfig)
 	{
 		// TODO: logConfig must be validated before assignment
 		$this->properties['logConfig'] = $logConfig;
@@ -139,7 +139,8 @@ class Project
 	 * @access public
 	 * @return boolean
 	 */
-	public function validate() {
+	public function validate()
+	{
 		$properties = $this->properties;
 		unset($properties['_id']);
 
@@ -160,21 +161,22 @@ class Project
 	 * @access public
 	 * @return array
 	 */
-	public function getProperties() {
+	public function export() {
 		return $this->properties;
 	}
-
 
 	/**
 	 * Fiils the object with the given raw data. This method travers the given
 	 * json data and matched elements with the properties will be assigned.
-	 *
+	 * 
+	 * <code>
 	 * $rawObject= stdClass(
 	 *   '_id' = '23ad12', 
 	 *   'name' = 'projectname', 
 	 *   'codeName' = 'codename',
 	 *   'logConfig' = Logmon\LogConfig\IConfig
 	 * )
+	 * </code>
 	 * 
 	 * @param stdClass $rawObject
 	 * @access public

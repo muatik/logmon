@@ -111,8 +111,9 @@ class ProjectsController implements ControllerProviderInterface
 		$result->projects = array();
 
 		foreach($projectList as $i) {
-			$i = $i->getProperties();
+			$i = $i->export();
 			$i['_id'] = (string) $i['_id'];
+			$i['logConfig'] = json_encode($i['logConfig']->export());
 			$result->projects[] = $i;
 		}	
 		

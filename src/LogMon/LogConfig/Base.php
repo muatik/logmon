@@ -7,7 +7,7 @@ namespace LogMon\LogConfig;
  * @abstract
  * @package LogMong\LogConfig;
  */
-abstract class Base	implements \JsonSerializable
+abstract class Base
 {
 	/**
 	 * storage type 
