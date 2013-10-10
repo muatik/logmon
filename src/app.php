@@ -107,7 +107,7 @@ $app['db.mongodb.collection'] = function($app) {
 $app['projects'] = $app->share(function($app) {
 	return new LogMon\Projects\Manager(
 		$app,  // required when the manager builds logConfig objects.
-		$app['db.mysql.collection']
+		$app['db.mongodb.collection']
 	);
 });
 

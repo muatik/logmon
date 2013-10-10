@@ -137,7 +137,7 @@ class MongoDBCollection implements IDBCollection
 
 			self::criteriaToDoctrineExp($queryBuilder, $criteria);
 			$q = $queryBuilder->getQuery();
-			print_r($q->getQuery());
+			
 			$q->execute();
 			$result->success = true;
 		} catch (\MongoCursorException $e) {
