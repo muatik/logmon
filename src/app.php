@@ -7,10 +7,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LogMon\Manager\MongoDBCollection;
 
-if ($app['debug']) {
-	error_reporting(E_ALL);
-	ini_set('display_errors','on');
-}
 
 if (isset($app)) {
 	$appConfig = $app;
@@ -27,10 +23,16 @@ if (isset($app)) {
 	$app = new Silex\Application();
 }
 
+
 /**
  * registering services
  * */
 $app->register(new Silex\Provider\SessionServiceProvider(), array());
+if ($app['debug']) {
+	error_reporting(E_ALL);
+	ini_set('display_errors','on');
+	$app->register(new \Whoops\Provider\Silex\WhoopsServiceProvider);
+}
 
 // $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
