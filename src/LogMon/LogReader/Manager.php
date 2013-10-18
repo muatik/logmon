@@ -6,15 +6,15 @@ class Manager
 	/**
 	 * build a log reader special to the project's log storage type.
 	 * 
-	 * @param LogMon\Projects\Project $project 
+	 * @param LogMon\LogConfig\IConfig $logConfig
 	 * @static
 	 * @access public
 	 * @return \LogMon\LogReader\IReader
 	 * @throws \Exception if the storage type of the project is unknown.
 	 */
-	public static function buildReader(Project $project)
+	public static function buildReader(\LogMon\LogConfig\IConfig $logConfig)
 	{
-		switch($project->logConfig->storageType) {
+		switch($logConfig->getStorageType()) {
 			case 'textFile':
 				$readerClass = 'ReaderTextFile';
 				break;
@@ -26,12 +26,13 @@ class Manager
 				break;
 			default:
 				throw new \Exception(sprintf(
-					"The storage type of the project '%s' is unknown: %s",
-					$project->codeName, $project->logConfig->storageType
+					"The storage type is unknown: %s",
+					$logConfig->storageType
 				));
 		}
-
-		$reader = new $readerClass($project->logConfig);
+		
+		$readerClass  = 'LogMon\LogReader\\' . $readerClass;
+		$reader = new $readerClass($logConfig);
 		return $reader;
 	}
 }

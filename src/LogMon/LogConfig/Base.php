@@ -24,8 +24,11 @@ abstract class Base
 	 * @var array
 	 * @access protected
 	 */
-	protected $properties = array();
-	
+	protected $properties = array(
+		'fieldMapping' => null // will be initialized in __construct()
+	);
+
+
 	/**
 	 * the dependency container object 
 	 *
@@ -37,6 +40,18 @@ abstract class Base
 	public function __construct(\Silex\Application $app) 
 	{
 		$this->app = $app;
+		$this->properties['fieldMapping'] = new FieldMapping();
+	}
+
+	/**
+	 * returns the value of the storage type
+	 * 
+	 * @access public
+	 * @return string
+	 */
+	public function getStorageType()
+	{
+		return $this->storageType;
 	}
 
 	/**
@@ -55,7 +70,10 @@ abstract class Base
 					sprintf('The value of "%s" is null. This is not acceptable.', $k)
 				);
 		}
-		return true;
+
+		print_r($this->properties['fieldMapping']);die();
+		$isMappingValid = $this->properties['fieldMapping']->validate();
+		return $isMappingValid;
 	}
 
 	/**
@@ -91,7 +109,17 @@ abstract class Base
 			}
 		} 
 	}
-	
+
+	public function setfieldMapping(Array $mappings)
+	{
+		die('K');
+		$fieldMapping = new FieldMapping();
+		foreach ($mapping as $field => $mapping)
+			$fieldmapping->setFieldMapping($field, $mapping);
+		
+		$this->properties['fieldMapping'] = $fieldMapping;
+	}
+
 	/**
 	 * the getter which handles the properties of the project.
 	 * 
@@ -144,6 +172,8 @@ abstract class Base
 	{
 		$data = $this->properties;
 		$data['storageType'] = $this->storageType;
+		if (is_object($data['fieldMapping']))
+			$data['fieldMapping'] = $this->properties['fieldMapping']->export();
 		return $data;
 	}
 

@@ -9,7 +9,7 @@ class LogController implements ControllerProviderInterface
 	public function connect(Application $app){
 		$log = $app['controllers_factory'];
 		$log->get('/', array($this, 'index'));
-		$log->get('entries', array($this, 'getEntries'));
+		$log->get('/entries', array($this, 'getEntries'));
 		return $log;
 	}
 
@@ -21,8 +21,16 @@ class LogController implements ControllerProviderInterface
 
 	public function getEntries(Application $app){
 		$request = $app['request'];
-		echo $request->get('ads', 'elam');
-		print_r($request->query->all());
+		$readerManager = new \LogMon\LogReader\Manager();
+		$projectManager = $app['projects'];
+		$projects = $projectManager->getAll();
+		foreach ($projects as $project) {
+			echo $project->codeName."<br>\n";
+			$reader  = $readerManager->buildReader($project->logConfig);
+			$c = $reader->fetch();
+			foreach($c as $i)
+				print_r($i);
+		}
 		return 'getEntries';
 	}
 }

@@ -9,4 +9,5 @@ interface IConfig
 	public function test();
 	public function __toString();
 	public function loadFromJson($json);
+	public function getStorageType();
 }

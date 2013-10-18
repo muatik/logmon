@@ -1,7 +1,7 @@
 <?php
 namespace LogMon\LogReader;
 
-class ReaderMongodb
+class ReaderMysql
 	extends Reader
 	implements IReader
 {
@@ -10,13 +10,15 @@ class ReaderMongodb
 	{
 		if (!$this->isInitialized)
 			$this->initialize();
-		
 		$conf = $this->logConfig;
+
 		$queryBuilder =  $this->connection->createQueryBuilder();
 		$queryBuilder
-			->limit($this->limit);
+			->select('c.*')
+			->from($conf->collectionName, 'c')
+			->setMaxResults($this->limit);
 
-		$cursor = $queryBuilder->getQuery()->execute();
+		$cursor = $queryBuilder->execute();
 		return $cursor;
 	}
 }

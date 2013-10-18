@@ -87,7 +87,8 @@ $app['db.mongodb.getConnection'] = function($app) {
 
 $app['db.mysql'] = $app->share(function($app) {
 	$connParams = $app['db.config.mysql'];
-	return $app['db.mysql.getConnection']($connParams);
+	$connection = $app['db.mysql.getConnection']($connParams);
+	return $connection;
 });
 
 $app['db.mongodb'] = $app->share(function($app) {
@@ -109,7 +110,7 @@ $app['db.mongodb.collection'] = function($app) {
 $app['projects'] = $app->share(function($app) {
 	return new LogMon\Projects\Manager(
 		$app,  // required when the manager builds logConfig objects.
-		$app['db.mongodb.collection']
+		$app['db.mysql.collection']
 	);
 });
 

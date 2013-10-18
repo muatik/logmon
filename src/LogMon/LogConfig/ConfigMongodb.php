@@ -127,11 +127,13 @@ class ConfigMongodb
 			'auth' => true,
 			'username' => $conf['username'],
 			'password' => $conf['password'],
-			'database' => $conf['databaseName']
+			'database' => $conf['databaseName'],
+			'fieldMapping' => new FieldMapping()
 		);
 		
 		// test connectivity through the doctrine's dbal
 		$conn = $this->app['db.mongodb.getConnection']($connParams);
-		return $conn->connect();
+		$conn = $conn->selectDatabase($conf['databaseName']);
+		return $conn->selectCollection($conf['collectionName']);
 	}
 }

@@ -42,4 +42,14 @@ abstract class Reader
 		'after',
 		'before'
 	);
+
+	public function __construct(\LogMon\LogConfig\IConfig $logConfig)
+	{
+		$this->logConfig = $logConfig;
+	}
+
+	public function initialize()
+	{
+		$this->connection = $this->logConfig->getConnection();
+	}
 }

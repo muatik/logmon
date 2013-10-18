@@ -33,7 +33,9 @@ class ConfigMysql
 		'username' => '',
 		'password' => '',
 		'databaseName' => '',
-		'collectionName' => '' // table name
+		'collectionName' => '', // table name
+		'charset' => 'utf8',
+		'fieldMapping' => new FieldMapping()
 	);
 
 
@@ -146,6 +148,7 @@ class ConfigMysql
 			'user' => $conf['username'],
 			'password' => $conf['password'],
 			'dbname' => $conf['databaseName'],
+			'charset' => $conf['charset'], // TODO: add to API
 			'driver' => 'pdo_mysql'
 		);
 
