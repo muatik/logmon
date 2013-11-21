@@ -71,7 +71,6 @@ abstract class Base
 				);
 		}
 
-		print_r($this->properties['fieldMapping']);die();
 		$isMappingValid = $this->properties['fieldMapping']->validate();
 		return $isMappingValid;
 	}
@@ -148,18 +147,7 @@ abstract class Base
 	 */
 	public function __toString() 
 	{
-		return $this->jsonSerialize($this);
-	}
-
-	/**
-	 * the implementation of jsonSerializable interface
-	 * 
-	 * @access public
-	 * @return void
-	 */
-	public function jsonSerialize()
-	{
-		return $this->export();
+		return $this->export($this);
 	}
 	
 	/**
@@ -202,8 +190,14 @@ abstract class Base
 					"The given configuration does not include the required prarameter '%s'",
 				   	$parameter
 				));
-
-			$this->properties[$parameter] = $jsonObject->$parameter;
+			
+			if ($parameter == 'fieldMapping') {
+				$fieldMapping = new FieldMapping();
+				$fieldMapping->loadFromJson($jsonObject->$parameter);
+				$this->properties[$parameter] = $fieldMapping;
+			} else {
+				$this->properties[$parameter] = $jsonObject->$parameter;
+			}
 		}
 	}
 }

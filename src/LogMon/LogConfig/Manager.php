@@ -38,6 +38,10 @@ class Manager
 				);
 		}
 
+		/**
+		 * from now we do not need storage type in the class 
+		 * beucase the class's name is self descriptive
+		 */
 		unset($rawConfig->storageType);
 		$logConfig->loadFromJson(json_encode($rawConfig));
 
@@ -45,7 +49,7 @@ class Manager
 			$logConfig->test();
 			return $logConfig;
 		} catch (\Exception $e) {
-			throw $e;
+			throw new \Exception('The logconfig is not valid. ' . $e->getMessage());
 		}
 	}
 }

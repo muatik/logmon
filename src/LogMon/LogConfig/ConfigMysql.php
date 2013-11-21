@@ -35,7 +35,7 @@ class ConfigMysql
 		'databaseName' => '',
 		'collectionName' => '', // table name
 		'charset' => 'utf8',
-		'fieldMapping' => new FieldMapping()
+		'fieldMapping' => null
 	);
 
 
