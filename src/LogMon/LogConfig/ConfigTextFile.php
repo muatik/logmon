@@ -71,7 +71,7 @@ class ConfigTextFile
 				sprintf('The file "%s" is not readable.', $filePath)
 			);
 		
-		return fread($filePath, 'r');
+		return fopen($filePath, 'r');
 	}
 
 	/**

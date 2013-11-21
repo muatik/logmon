@@ -56,7 +56,7 @@ class Manager
 	 */
 	private function serializeLogConfig(\LogMon\LogConfig\IConfig $logConfig)
 	{
-		return json_encode($logConfig->export());
+		return $logConfig->toJson();
 	}
 
 	/**
@@ -66,15 +66,17 @@ class Manager
 	 * @access public
 	 * @return boolean
 	 */
-	public function register(Project $project) {
-		
+	public function register(Project $project) 
+	{
+
 		try {
 			$project->validate();
 		} catch (\Exception $e) {
 			throw $e;
 		}
 
-		$object = $project->export();
+		$object = $project->toJson(false);
+		
 		if ($object['_id'] == null)
 			unset($object['_id']);
 		
@@ -106,7 +108,7 @@ class Manager
 			throw $e;
 		}
 
-		$object = $project->export();
+		$object = $project->toJson(false);
 		$id = $object['_id'];
 		unset($object['_id']);
 		

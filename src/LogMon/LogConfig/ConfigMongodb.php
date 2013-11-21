@@ -30,6 +30,7 @@ class ConfigMongodb
 	protected $properties = array(
 		'host' => '',
 		'port' => '27017',
+		'auth' => true,
 		'username' => '',
 		'password' => '',
 		'databaseName' => '',
@@ -112,10 +113,10 @@ class ConfigMongodb
 	
 	/**
 	 * returns a connection resource of the storage
-	 * If fails, an exception will be thrwon.
 	 *
 	 * @access public
 	 * @return \Doctrine\DBAL\Connection
+	 * @throws if it fails to connect
 	 */
 	public function getConnection() 
 	{
@@ -124,16 +125,15 @@ class ConfigMongodb
 		$connParams = array(
 			'host' => $conf['host'],
 			'port' => $conf['port'],
-			'auth' => true,
+			'auth' => $conf['auth'],
 			'username' => $conf['username'],
 			'password' => $conf['password'],
 			'database' => $conf['databaseName'],
-			'fieldMapping' => new FieldMapping()
 		);
 		
 		// test connectivity through the doctrine's dbal
 		$conn = $this->app['db.mongodb.getConnection']($connParams);
-		$conn = $conn->selectDatabase($conf['databaseName']);
-		return $conn->selectCollection($conf['collectionName']);
+		$db = $conn->selectDatabase($conf['databaseName']);
+		return $db->selectCollection($conf['collectionName']);
 	}
 }

@@ -64,35 +64,12 @@ class FieldMapping
 				"The field '%s' is unknown.", $field));
 		
 		if (!$this->isMappingValid($mapping))
-			throw new \InvalidArgumentException(sprintf("The mapping of the '.
-			'field '%s' must have both fieldName and regex.", $field));
+			throw new \InvalidArgumentException(sprintf("The mapping of the ".
+			"field '%s' must have both fieldName and regex.", $field));
 
 		$this->fields[$field] = $mapping;
 	}
 	
-	/**
-	 * loads the field mapping from the given json 
-	 * 
-	 * @param object|string $jsonObject 
-	 * @access public
-	 * @return void
-	 * @throws if any required field does not exists
-	 */
-	public function loadFromJson($jsonObject)
-	{
-		if (!is_object($jsonObject))
-			$jsonObject = json_decode($jsonObject);
-
-		foreach ($this->fields as $parameter => $value) {
-			if (!isset($jsonObject->$parameter))
-				throw new \InvalidArgumentException(sprintf(
-					"The given field mapping does not include the required prarameter '%s'",
-				   	$parameter
-				));
-			
-			$this->setFieldMapping($parameter, $jsonObject->$parameter);
-		}
-	}
 
 	/**
 	 * validates the field mapping
@@ -111,14 +88,40 @@ class FieldMapping
 		return true;
 	}
 
+
+	/**
+	 * loads the field mapping from the given json 
+	 * 
+	 * @param object|string $jsonObject 
+	 * @access public
+	 * @return void
+	 * @throws if any required field does not exists
+	 */
+	public function fromJson($jsonObject)
+	{
+		if (!is_object($jsonObject))
+			$jsonObject = json_decode($jsonObject);
+
+		foreach ($this->fields as $parameter => $value) {
+			if (!isset($jsonObject->$parameter))
+				throw new \InvalidArgumentException(sprintf(
+					"The given field mapping does not include the required prarameter '%s'",
+				   	$parameter
+				));
+			
+			$this->setFieldMapping($parameter, $jsonObject->$parameter);
+		}
+	}
+
+
 	/**
 	 * exports the data of the field mapping
 	 * 
 	 * @access public
 	 * @return array
 	 */
-	public function export()
+	public function toJson()
 	{
-		return $this->fields;
+		return json_encode($this->fields);
 	}
 }

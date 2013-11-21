@@ -10,26 +10,13 @@ class ProjectsController implements ControllerProviderInterface
 	public function connect(Application $app)
 	{
 		$index = $app['controllers_factory'];
-
-		$index->get('/', array($this, 'index'));
-
-		$index->post('/register', array($this, 'register'));
-
-		$index->post('/update', array($this, 'update'));
-
-		$index->match('/delete/{id}', array($this, 'delete'));
-
-		$index->get('/list', array($this, 'getList'));
-
+		$index->get('/', array($this, 'getList'));
+		$index->put('/', array($this, 'register'));
+		$index->post('/{id}', array($this, 'update'));
+		$index->delete('/{id}', array($this, 'delete'));
 		return $index;
 	}
 
-	public function index(Application $app) 
-	{
-		echo $app['request']->getContent();
-		return 'projects index';
-	}
-	
 	public function register(Application $app) 
 	{
 		$projects = $app['projects'];
@@ -37,6 +24,7 @@ class ProjectsController implements ControllerProviderInterface
 
 		try	{
 			$jsonProject = json_decode($app['request']->getContent());
+			
 			if (!isset($jsonProject->logConfig))
 				throw new \Exception("The paramter 'logConfig' not found in the request.");
 
@@ -48,7 +36,7 @@ class ProjectsController implements ControllerProviderInterface
 				$jsonProject->logConfig
 			);
 
-			$newProject->initFromObject($jsonProject);
+			$newProject->fromJson($jsonProject);
 
 			// TODO: return more appropriate return message
 			$projects->register($newProject);
@@ -111,9 +99,9 @@ class ProjectsController implements ControllerProviderInterface
 		$result->projects = array();
 
 		foreach($projectList as $i) {
-			$i = $i->export();
+			$i = $i->toJson(false);
 			$i['_id'] = (string) $i['_id'];
-			$i['logConfig'] =$i['logConfig']->export();
+			$i['logConfig'] =$i['logConfig']->toJson(false);
 			$result->projects[] = $i;
 		}	
 		

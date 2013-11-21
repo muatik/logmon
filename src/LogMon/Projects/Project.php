@@ -161,8 +161,8 @@ class Project
 	 * @access public
 	 * @return array
 	 */
-	public function export() {
-		return $this->properties;
+	public function toJson($encode = true) {
+		return ($encode ? json_encode($this->properties) : $this->properties);
 	}
 
 	/**
@@ -170,20 +170,21 @@ class Project
 	 * json data and matched elements with the properties will be assigned.
 	 * 
 	 * <code>
-	 * $rawObject= stdClass(
+	 * $rawObject= {
 	 *   '_id' = '23ad12', 
 	 *   'name' = 'projectname', 
 	 *   'codeName' = 'codename',
 	 *   'logConfig' = Logmon\LogConfig\IConfig
-	 * )
+	 * }
 	 * </code>
 	 * 
-	 * @param stdClass $rawObject
+	 * @param json $rawObject
 	 * @access public
 	 * @return boolean
 	 */
-	public function initFromObject($rawObject)
+	public function fromJson($rawObject)
 	{
+		$rawObject = (!is_object($rawObject) ? json_decode($rawObject) : $rawObject);
 		foreach($rawObject as $key => $value)
 			if (array_key_exists($key, $this->properties))
 				$this->$key = $value;

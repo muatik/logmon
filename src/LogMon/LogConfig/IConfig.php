@@ -8,6 +8,7 @@ interface IConfig
 	public function getConnection();
 	public function test();
 	public function __toString();
-	public function loadFromJson($json);
+	public function toJson($encode = true);
+	public function fromJson($json);
 	public function getStorageType();
 }

@@ -2,7 +2,7 @@
 namespace LogMon\LogConfig;
 
 /**
- * Base 
+ * The base class of log config classes
  * 
  * @abstract
  * @package LogMong\LogConfig;
@@ -65,7 +65,7 @@ abstract class Base
 	public function validate()
 	{
 		foreach($this->properties as $k => $i) {
-			if (empty($i))
+			if ($i === null)
 				throw new \Exception(
 					sprintf('The value of "%s" is null. This is not acceptable.', $k)
 				);
@@ -109,9 +109,8 @@ abstract class Base
 		} 
 	}
 
-	public function setfieldMapping(Array $mappings)
+	public function setFieldMapping(Array $mappings)
 	{
-		die('K');
 		$fieldMapping = new FieldMapping();
 		foreach ($mapping as $field => $mapping)
 			$fieldmapping->setFieldMapping($field, $mapping);
@@ -147,22 +146,24 @@ abstract class Base
 	 */
 	public function __toString() 
 	{
-		return $this->export($this);
+		return $this->toJson($this);
 	}
 	
 	/**
 	 * exports the object's properties 
 	 * 
 	 * @access public
-	 * @return void
+	 * @return json
 	 */
-	public function export()
+	public function toJson($encode = true)
 	{
 		$data = $this->properties;
 		$data['storageType'] = $this->storageType;
 		if (is_object($data['fieldMapping']))
-			$data['fieldMapping'] = $this->properties['fieldMapping']->export();
-		return $data;
+			$data['fieldMapping'] = json_decode(
+				$this->properties['fieldMapping']->toJson());
+
+		return ($encode ? json_encode($data) : $data);
 	}
 
 	/**
@@ -181,9 +182,9 @@ abstract class Base
 	 * @return void
 	 * @throws \InvalidArgumentException If the json object does not include required parameters.
 	 */
-	public function loadFromJson($jsonObject)
+	public function fromJson($jsonObject)
 	{
-		$jsonObject = json_decode($jsonObject);
+		$jsonObject = (!is_object($jsonObject) ? json_decode($jsonObject) : $jsonObject);
 		foreach ($this->properties as $parameter => $value) {
 			if (!isset($jsonObject->$parameter))
 				throw new \InvalidArgumentException(sprintf(
@@ -193,7 +194,7 @@ abstract class Base
 			
 			if ($parameter == 'fieldMapping') {
 				$fieldMapping = new FieldMapping();
-				$fieldMapping->loadFromJson($jsonObject->$parameter);
+				$fieldMapping->fromJson($jsonObject->$parameter);
 				$this->properties[$parameter] = $fieldMapping;
 			} else {
 				$this->properties[$parameter] = $jsonObject->$parameter;

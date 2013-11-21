@@ -22,7 +22,7 @@ class Manager
 			));
 		
 		switch ($rawConfig->storageType) {
-			case 'textFile':
+			case 'localFile':
 				$logConfig = new ConfigTextFile($app);
 				break;
 			case 'mongodb':
@@ -33,17 +33,17 @@ class Manager
 				break;
 			default:
 				throw new \Exception(
-					sprintf("The storage type is unknown: '%s'"
-						, $rawConfig->storageType)
+					sprintf("The storage type is unknown: '%s'", 
+						$rawConfig->storageType)
 				);
 		}
 
 		/**
 		 * from now we do not need storage type in the class 
-		 * beucase the class's name is self descriptive
+		 * beucase the logconfig class itself knows storage type.
 		 */
 		unset($rawConfig->storageType);
-		$logConfig->loadFromJson(json_encode($rawConfig));
+		$logConfig->fromJson($rawConfig);
 
 		try{
 			$logConfig->test();
