@@ -14,6 +14,32 @@ class ProjectsController implements ControllerProviderInterface
 		$index->put('/', array($this, 'register'));
 		$index->post('/{id}', array($this, 'update'));
 		$index->delete('/{id}', array($this, 'delete'));
+		$index->get('/log/entries', function(Application $app) {
+			
+			$logConfig = new \LogMon\LogConfig\ConfigMysql($app, json_encode(array(
+				'host' => 'localhost',
+				'port' => '3306',
+				'charset' => 'utf8',
+				'username' => 'root',
+				'password' => 'root',
+				'databaseName' => 'test',
+				'collectionName' => 'logTable1',
+				'fieldMapping' => array(
+					'unique' => array('fieldName' => 'id', 'regex' => '.*'),
+					'date' => array('fieldName' => 'at', 'regex' => '.*'),
+					'type' => array('fieldName' => 'type', 'regex' => '.*'),
+					'message' => array('fieldName' => 'text', 'regex' => '.*')
+				)
+			)));
+
+			$reader = \LogMon\LogReader\Manager::BuildReader($logConfig);
+			$cursor = $reader->fetch();
+			foreach ($cursor as $i)
+				echo sprintf("id: %s, type: %s, message: %s, date: %s <br>", 
+					$i['unique'], $i['type'], $i['message'], $i['date']
+				);
+			return 'OK';
+		});
 		return $index;
 	}
 

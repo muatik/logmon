@@ -38,10 +38,12 @@ abstract class BaseLogConfig
 	protected $app;
 
 
-	public function __construct(\Silex\Application $app) 
+	public function __construct(\Silex\Application $app, $data = null) 
 	{
 		$this->app = $app;
 		$this->properties['fieldMapping'] = $this->createFieldMapping();
+		if ($data != null)
+			$this->fromJson($data);
 	}
 
 

@@ -5,15 +5,16 @@ abstract class Reader
 {
 
 	/**
-	 * logConfig 
+	 * an object of log configuration by which this class will 
+	 * read log entries.
 	 * 
-	 * @var mixed
+	 * @var LogMon\LogConfig\IConfig
 	 * @access protected
 	 */
 	protected $logConfig;
 
 	/**
-	 * resource connection 
+	 * the connection of log resource
 	 * 
 	 * @var mixed
 	 * @access protected
@@ -21,15 +22,15 @@ abstract class Reader
 	protected $connection;
 
 	/**
-	 * initializes the resource connection
+	 * indicates whether the class is initialized or not
 	 * 
-	 * @var mixed
+	 * @var boolean
 	 * @access protected
 	 */
-	protected $isInitialized;
+	protected $isInitialized = false;
 
 	/**
-	 * represents the maxiumum amount of log entiries in each fetching
+	 * specifiy the maxiumum amount of log entiries for each fetching
 	 * 
 	 * @var int
 	 * @access protected
@@ -48,8 +49,15 @@ abstract class Reader
 		$this->logConfig = $logConfig;
 	}
 
+	/**
+	 * initializes necesssary resources for essentail functions
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	public function initialize()
 	{
+		$this->logConfig->test();
 		$this->connection = $this->logConfig->getConnection();
 	}
 }

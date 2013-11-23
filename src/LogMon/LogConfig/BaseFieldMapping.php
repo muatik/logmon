@@ -66,7 +66,7 @@ abstract class BaseFieldMapping implements IFieldMapping
 	 */
 	public function fromJson($jsonObject)
 	{
-		if (!is_object($jsonObject))
+		if (is_string($jsonObject))
 			$jsonObject = json_decode($jsonObject);
 
 		foreach ($this->fields as $parameter => $value) {
@@ -88,4 +88,6 @@ abstract class BaseFieldMapping implements IFieldMapping
 	{
 		return json_encode($this->fields);
 	}
+
+
 }

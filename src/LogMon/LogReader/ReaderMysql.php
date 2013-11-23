@@ -10,13 +10,20 @@ class ReaderMysql
 	{
 		if (!$this->isInitialized)
 			$this->initialize();
-		$conf = $this->logConfig;
 
+		$fieldMapping= $this->logConfig->fieldMapping;
+		
 		$queryBuilder =  $this->connection->createQueryBuilder();
 		$queryBuilder
-			->select('c.*')
-			->from($conf->collectionName, 'c')
+			->from($this->logConfig->collectionName, 'c')
 			->setMaxResults($this->limit);
+
+		$queryBuilder->addSelect(array(
+			'c.'.$fieldMapping->unique->fieldName.' as `unique`',
+			'c.'.$fieldMapping->type->fieldName.' as `type`',
+			'c.'.$fieldMapping->message->fieldName.' as `message`',
+			'c.'.$fieldMapping->date->fieldName.' as `date`'
+		));
 
 		$cursor = $queryBuilder->execute();
 		return $cursor;
