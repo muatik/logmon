@@ -8,7 +8,7 @@ namespace LogMon\LogConfig;
  * @package LogMon\LogConfig
  */
 class ConfigMysql
-   	extends Base
+   	extends BaseLogConfig
 	implements IConfig
 {
 
@@ -37,6 +37,15 @@ class ConfigMysql
 		'charset' => 'utf8',
 		'fieldMapping' => null
 	);
+
+
+	/**
+	 * @overrides
+	 */
+	protected function createFieldMapping() 
+	{
+		return new FieldMappingMysql();
+	}
 
 
 	/**

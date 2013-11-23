@@ -23,7 +23,7 @@ class Manager
 		
 		switch ($rawConfig->storageType) {
 			case 'localFile':
-				$logConfig = new ConfigTextFile($app);
+				$logConfig = new ConfigLocalFile($app);
 				break;
 			case 'mongodb':
 				$logConfig = new ConfigMongodb($app);

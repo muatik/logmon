@@ -15,6 +15,7 @@
         "doctrine/orm": "2.4.*",
 		"doctrine/mongodb": "1.1.*@dev",
 		"filp/whoops": "1.*",
-		"silex/web-profiler": "~1.0"
+		"silex/web-profiler": "~1.0",
+		"phpunit/phpunit" : "*"
 	}
 }

@@ -8,7 +8,7 @@ namespace LogMon\LogConfig;
  * @package LogMon\LogConfig
  */
 class ConfigMongodb
-	extends Base 
+	extends BaseLogConfig
 	implements IConfig
 {
 
@@ -37,6 +37,14 @@ class ConfigMongodb
 		'collectionName' => ''
 	);
 
+	/**
+	 * @overrides
+	 */
+	protected function createFieldMapping() 
+	{
+		return new FieldMappingMongodb();
+	}
+	
 
 	/**
 	 * sets host address

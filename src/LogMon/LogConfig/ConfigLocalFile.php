@@ -2,13 +2,13 @@
 namespace LogMon\LogConfig;
 
 /**
- * The class ConfigTextFile manages log configurations in plain files.
+ * The class ConfigLocalFile manages log configurations in plain files.
  * 
  * @uses Base
  * @package LogMon\LogConfig
  */
-class ConfigTextFile 
-	extends Base 
+class ConfigLocalFile
+	extends BaseLogConfig
 	implements IConfig
 {
 
@@ -30,6 +30,16 @@ class ConfigTextFile
 	protected $properties = array(
 		'filePath' => ''
 	);
+
+
+	/**
+	 * @overrides
+	 */
+	protected function createFieldMapping() 
+	{
+		return new FieldMappingTextFile();
+	}
+
 
 	/**
 	 * sets the file system path of the log.
@@ -66,6 +76,11 @@ class ConfigTextFile
 				sprintf('The file "%s" does not exists.', $filePath)
 			);
 		
+		if (!is_file($filePath))
+			throw new \Exception(
+				sprintf('"%s" does not look like a file ', $filePath)
+			);
+
 		if (!is_readable($filePath))
 			throw new \Exception(
 				sprintf('The file "%s" is not readable.', $filePath)

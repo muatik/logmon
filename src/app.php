@@ -128,4 +128,9 @@ $app->register(new Silex\Provider\WebProfilerServiceProvider(), array(
 
 require ROOT.'src/LogMon/router.php';
 
+if (isset($app_env) && in_array($app_env, array('prod','dev','test')))
+    $app['env'] = $app_env;
+else
+	$app['env'] = 'prod';	
+
 return $app;

@@ -26,7 +26,7 @@ API Functions
 
 ####1) Registering and updating a project####
 
-```POST /v1/projects/register```
+```PUT /v1/projects/```
 
 Registers a new project or updates a current one. This command neeeds a json object placed in http request body. Each json object requires the following members:
 
@@ -62,14 +62,14 @@ Updates a registered project. This command neeeds a json object placed in http r
 An example json can be seen here: https://gist.github.com/muatik/6412938#file-project-update-json
 
 ####3) Deleting projects####
-```DELETE /v1/projects/register/{projectId}```
+```DELETE /v1/projects/{projectId}```
 
 Deletes the registered project matching the given project id. 
 
 
 ####4) Getting list of projects####
 
-```GET /v1/projects/list```
+```GET /v1/projects/```
 
 Returns a list of registered projects. Each entry consists of the following variables:
 

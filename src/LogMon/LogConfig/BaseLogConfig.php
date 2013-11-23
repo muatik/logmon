@@ -7,7 +7,7 @@ namespace LogMon\LogConfig;
  * @abstract
  * @package LogMong\LogConfig;
  */
-abstract class Base
+abstract class BaseLogConfig
 {
 	/**
 	 * storage type 
@@ -36,12 +36,27 @@ abstract class Base
 	 * @access protected
 	 */
 	protected $app;
-	
+
+
 	public function __construct(\Silex\Application $app) 
 	{
 		$this->app = $app;
-		$this->properties['fieldMapping'] = new FieldMapping();
+		$this->properties['fieldMapping'] = $this->createFieldMapping();
 	}
+
+
+	/**
+	 * instantiates a field mapping object which is special for individual classes
+	 * 
+	 * @static
+	 * @access private
+	 * @return BaseFieldMapping
+	 */
+	protected function createFieldMapping() 
+	{
+		// must be implement in each individual derived class
+	}
+
 
 	/**
 	 * returns the value of the storage type
@@ -111,7 +126,7 @@ abstract class Base
 
 	public function setFieldMapping(Array $mappings)
 	{
-		$fieldMapping = new FieldMapping();
+		$fieldMapping = $this->createFieldMapping();
 		foreach ($mapping as $field => $mapping)
 			$fieldmapping->setFieldMapping($field, $mapping);
 		
@@ -193,7 +208,7 @@ abstract class Base
 				));
 			
 			if ($parameter == 'fieldMapping') {
-				$fieldMapping = new FieldMapping();
+				$fieldMapping = $this->createFieldMapping();
 				$fieldMapping->fromJson($jsonObject->$parameter);
 				$this->properties[$parameter] = $fieldMapping;
 			} else {

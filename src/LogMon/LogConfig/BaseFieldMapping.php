@@ -1,7 +1,7 @@
 <?php
 namespace LogMon\LogConfig;
 
-class FieldMapping
+abstract class BaseFieldMapping implements IFieldMapping
 {
 	/**
 	 * the list of the field.
@@ -9,21 +9,7 @@ class FieldMapping
 	 * @var array
 	 * @access protected
 	 */
-	protected $fields = array(
-		'unique' => array('fieldName' => null, 'regex' => '.*'),
-		'date' => array('fieldName' => null, 'regex' => '.*'),
-		'type' => array('fieldName' => null, 'regex' => '.*'),
-		'message' => array('fieldName' => null, 'regex' => '.*'),
-	);
-
-	public function __construct()
-	{
-		$defaultMapping = new \stdClass();
-		$defaultMapping->fieldName = null;
-		$defaultMapping->regex = '*';
-		foreach ($this->fields as $field => $val)
-			$this->fields[$field] = $defaultMapping;
-	}
+	protected $fields = array();
 
 	public function __get($name)
 	{
@@ -37,11 +23,7 @@ class FieldMapping
 	}
 	
 	/**
-	 * checks whether the mapping is valid or not.
-	 * 
-	 * @param object $mapping 
-	 * @access public
-	 * @return boolean
+	 * @implements IFieldMapping
 	 */
 	public function isMappingValid($mapping)
 	{
@@ -49,13 +31,7 @@ class FieldMapping
 	}
 	
 	/**
-	 * sets the given mapping to the field
-	 * 
-	 * @param string $field 
-	 * @param object $mapping 
-	 * @access public
-	 * @return void
-	 * @throws if the field is unknown or the mapping is not valid.
+	 * @implements IFieldMapping
 	 */
 	public function setFieldMapping($field, $mapping)
 	{
@@ -72,11 +48,7 @@ class FieldMapping
 	
 
 	/**
-	 * validates the field mapping
-	 * 
-	 * @access public
-	 * @return boolean
-	 * @throws if any mapping is invalid
+	 * @implements IFieldMapping
 	 */
 	public function validate()
 	{
@@ -90,12 +62,7 @@ class FieldMapping
 
 
 	/**
-	 * loads the field mapping from the given json 
-	 * 
-	 * @param object|string $jsonObject 
-	 * @access public
-	 * @return void
-	 * @throws if any required field does not exists
+	 * @implements IFieldMapping
 	 */
 	public function fromJson($jsonObject)
 	{
@@ -115,10 +82,7 @@ class FieldMapping
 
 
 	/**
-	 * exports the data of the field mapping
-	 * 
-	 * @access public
-	 * @return array
+	 * @implements IFieldMapping
 	 */
 	public function toJson()
 	{

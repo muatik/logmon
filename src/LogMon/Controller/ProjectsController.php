@@ -93,7 +93,12 @@ class ProjectsController implements ControllerProviderInterface
 	public function getList(Application $app) 
 	{
 		$projects = $app['projects'];
-		$projectList = $projects->getAll();
+
+		try {
+			$projectList = $projects->getAll();
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
 
 		$result = new \stdClass();
 		$result->projects = array();
