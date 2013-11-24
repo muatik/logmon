@@ -24,7 +24,7 @@ class ReaderMysql
 			'c.'.$fieldMapping->message->fieldName.' as `message`',
 			'c.'.$fieldMapping->date->fieldName.' as `date`'
 		));
-
+		
 		$cursor = $queryBuilder->execute();
 		return $cursor;
 	}
