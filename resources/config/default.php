@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Europe/Istanbul');
 
 define('ROOT',dirname(__DIR__).'/../');
 $app['debug'] = true;

@@ -62,6 +62,26 @@ abstract class BaseFieldMapping implements IFieldMapping
 
 
 	/**
+	 * maps the given array data
+	 * 
+	 * @param Array $data 
+	 * @access public
+	 * @return Array
+	 */
+	public function map(Array $data)
+	{
+		foreach($this->fields as $field => $mapping) {
+			$statement = $data[$field];
+			preg_match('/'.$mapping->regex.'/i', $statement, $matches);
+			if (isset($matches[1])) {
+				$data[$field] = $matches[1];
+			}
+		}
+		return $data;
+	}
+
+
+	/**
 	 * @implements IFieldMapping
 	 */
 	public function fromJson($jsonObject)

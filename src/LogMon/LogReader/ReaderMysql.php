@@ -26,6 +26,6 @@ class ReaderMysql
 		));
 		
 		$cursor = $queryBuilder->execute();
-		return $cursor;
+		return new EntriesMysql($cursor, $fieldMapping);
 	}
 }

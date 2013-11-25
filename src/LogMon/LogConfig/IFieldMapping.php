@@ -36,6 +36,15 @@ interface IFieldMapping
 
 
 	/**
+	 * maps the given data
+	 * 
+	 * @param Array $data 
+	 * @access public
+	 * @return Array
+	 */
+	public function map(Array $data);
+
+	/**
 	 * loads the field mapping from the given json 
 	 * 
 	 * @param object|string $jsonObject 

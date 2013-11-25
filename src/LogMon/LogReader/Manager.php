@@ -1,6 +1,9 @@
 <?php
 namespace LogMon\LogReader;
 
+use LogMon\LogConfig\IConfig;
+use LogMong\LogConfig\FieldMapping;
+
 class Manager
 {
 	/**
@@ -12,7 +15,7 @@ class Manager
 	 * @return \LogMon\LogReader\IReader
 	 * @throws \Exception if the storage type of the project is unknown.
 	 */
-	public static function buildReader(\LogMon\LogConfig\IConfig $logConfig)
+	public static function buildReader(IConfig $logConfig)
 	{
 		switch($logConfig->getStorageType()) {
 			case 'textFile':
@@ -30,9 +33,9 @@ class Manager
 					$logConfig->storageType
 				));
 		}
-		
+
 		$readerClass  = 'LogMon\LogReader\\' . $readerClass;
-		$reader = new $readerClass($logConfig);
+		$reader = new $readerClass($logConfig, $logConfig->fieldMapping);
 		return $reader;
 	}
 }

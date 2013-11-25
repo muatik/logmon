@@ -16,16 +16,16 @@ class FieldMappingTextFile extends BaseFieldMapping
 	 * @overrides
 	 */
 	protected $fields = array(
-		'unique' => array('regex' => '.*'),
-		'date' => array('regex' => '.*'),
-		'type' => array('regex' => '.*'),
-		'message' => array('regex' => '.*'),
+		'unique' => array('regex' => '(.*)'),
+		'date' => array('regex' => '(.*)'),
+		'type' => array('regex' => '(.*)'),
+		'message' => array('regex' => '(.*)'),
 	);
 
 	public function __construct()
 	{
 		$defaultMapping = new \stdClass();
-		$defaultMapping->regex = '*';
+		$defaultMapping->regex = '(.*)';
 		foreach ($this->fields as $field => $val)
 			$this->fields[$field] = $defaultMapping;
 	}

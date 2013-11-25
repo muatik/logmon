@@ -16,17 +16,17 @@ class FieldMappingMongodb extends BaseFieldMapping
 	 * @overrides
 	 */
 	protected $fields = array(
-		'unique' => array('fieldName' => null, 'regex' => '.*'),
-		'date' => array('fieldName' => null, 'regex' => '.*'),
-		'type' => array('fieldName' => null, 'regex' => '.*'),
-		'message' => array('fieldName' => null, 'regex' => '.*'),
+		'unique' => array('fieldName' => null, 'regex' => '(.*)'),
+		'date' => array('fieldName' => null, 'regex' => '(.*)'),
+		'type' => array('fieldName' => null, 'regex' => '(.*)'),
+		'message' => array('fieldName' => null, 'regex' => '(.*)'),
 	);
 
 	public function __construct()
 	{
 		$defaultMapping = new \stdClass();
 		$defaultMapping->fieldName = null;
-		$defaultMapping->regex = '*';
+		$defaultMapping->regex = '(.*)';
 		foreach ($this->fields as $field => $val)
 			$this->fields[$field] = $defaultMapping;
 	}

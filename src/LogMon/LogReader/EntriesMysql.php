@@ -1,12 +1,30 @@
 <?php
 namespace LogMon\LogReader;
-require 'Entries.php';
+
+use LogMon\LogConfig\IFieldMapping;
+
+/**
+ * Entris Iterator for MySQL Results 
+ *
+ * WARNING: This class uses PDO statment as a cursor which does not 
+ * support seekable/scrollable cursor for MySQL database. Because of this,
+ * the constructer will be overriden to make cursor a simple array.
+ * So, this might be inefficient for large data results.
+ * see: http://stackoverflow.com/questions/278259/is-it-possible-to-rewind-a-pdo-result
+ *
+ * @uses Entries
+ */
 class EntriesMysql extends Entries
 {
+	public function __construct($cursor, IFieldMapping $fieldMapping)
+	{
+		parent::__construct($cursor, $fieldMapping);
+		$this->cursor = $cursor->fetchAll();
+	}
+
 	public function current ()
 	{
-		$this->data->data_seek($this->position);
-		return $this->data->fetch_array();
+		return $this->fieldMapping->map($this->cursor[$this->position]);
 	}
 
 	public function rewind ()
@@ -26,12 +44,12 @@ class EntriesMysql extends Entries
 
 	public function valid ()
 	{
-		return $this->data->data_seek($this->position);
+		return isset($this->cursor[$this->position]);
 	}
 
 	public function seek ($position)
 	{
-		if (!$this->data->data_seek($position))
+		if (!isset($this->cursor[$position]))
 			throw new OutOfBoundsException("invalid seek position ($position)");
 
 		$this->position = $position;
@@ -39,11 +57,7 @@ class EntriesMysql extends Entries
 
 	public function count ()
 	{
-		return $this->data->num_rows;
+		return count($this->cursor);
 	}
 
-
-
 }
-
-$a = new EntriesMysql(null);

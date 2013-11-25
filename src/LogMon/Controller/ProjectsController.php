@@ -25,15 +25,31 @@ class ProjectsController implements ControllerProviderInterface
 				'databaseName' => 'test',
 				'collectionName' => 'logTable1',
 				'fieldMapping' => array(
-					'unique' => array('fieldName' => 'id', 'regex' => '.*'),
-					'date' => array('fieldName' => 'at', 'regex' => '.*'),
-					'type' => array('fieldName' => 'type', 'regex' => '.*'),
-					'message' => array('fieldName' => 'text', 'regex' => '.*')
+					'unique' => array('fieldName' => 'id', 'regex' => '(.*)'),
+					'date' => array('fieldName' => 'at', 'regex' => '(.*)'),
+					'type' => array('fieldName' => 'type', 'regex' => '(.*)'),
+					'message' => array('fieldName' => 'text', 'regex' => '(.*)')
+				)
+			)));
+			$logConfig2 = new \LogMon\LogConfig\ConfigMysql($app, json_encode(array(
+				'host' => 'localhost',
+				'port' => '3306',
+				'charset' => 'utf8',
+				'username' => 'root',
+				'password' => 'root',
+				'databaseName' => 'test',
+				'collectionName' => 'logTable2',
+				'fieldMapping' => array(
+					'unique' => array('fieldName' => 'text', 'regex' => '(^\d)+'),
+					'type' => array('fieldName' => 'text', 'regex' => '^\d+ (\w+) '),
+					'date' => array('fieldName' => 'text', 'regex' => '^\d+ \w+ (\d{4}-\d{2}-\d{2} \d{2}:\d{2})'),
+					'message' => array('fieldName' => 'text', 'regex' => '^\d+ \w+ \d{4}-\d{2}-\d{2} \d{2}:\d{2} (.+)'),
 				)
 			)));
 
 			$reader = \LogMon\LogReader\Manager::BuildReader($logConfig);
 			$cursor = $reader->fetch();
+
 			foreach ($cursor as $i)
 				echo sprintf("id: %s, type: %s, message: %s, date: %s <br>", 
 					$i['unique'], $i['type'], $i['message'], $i['date']

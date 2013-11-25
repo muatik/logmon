@@ -1,14 +1,19 @@
 <?php
 namespace LogMon\LogReader;
 
+use LogMon\LogConfig\IFieldMapping;
+
 abstract class Entries implements \SeekableIterator, \Countable
 {
 	private $position = 0;
 	
 	protected $cursor;
+	
+	protected $fieldMapping;
 
-	public function __construct($cursor)
+	public function __construct($cursor, IFieldMapping $fieldMapping)
 	{
+		$this->fieldMapping = $fieldMapping;
 		$this->cursor = $cursor;
 		$this->position = 0;
 		$this->rewind();
