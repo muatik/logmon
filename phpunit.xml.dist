@@ -7,7 +7,8 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="false"
+		 syntaxCheck="false"
+		 bootstrap="tests/bootstrap.php"
 >
     <testsuites>
         <testsuite name="Logmon API Test Suite">

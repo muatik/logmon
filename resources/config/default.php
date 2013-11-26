@@ -1,7 +1,9 @@
 <?php
 date_default_timezone_set('Europe/Istanbul');
 
-define('ROOT',dirname(__DIR__).'/../');
+if (!defined('ROOT'))
+	define('ROOT',dirname(__DIR__).'/../');
+
 $app['debug'] = true;
 $app['locale'] = 'en';
 $app['resources_path'] = realpath(ROOT.'/resources/');

@@ -18,7 +18,7 @@ class ProjectTest extends WebTestCase
 	{
 		$this->markTestIncomplete('This test has not been implemented yet.');
 	}
-
+/*
 
 	public function testDeleteProject()
 	{
@@ -44,13 +44,5 @@ class ProjectTest extends WebTestCase
 	}
 
 
-	/*
-	public function testGettingProjectList()
-	{
-		$client = $this->createClient();
-		$client->request('GET', '/projects');
-		$response = $client->getResponse()->getContent();
-		$projects = json_decode($response);
-		$this->assertTrue(is_array($projects));
-	}*/
+ */
 }
