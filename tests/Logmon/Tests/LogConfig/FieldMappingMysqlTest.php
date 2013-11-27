@@ -1,7 +1,7 @@
 <?php
 namespace LogMon\Tests\LogConfig;
 
-class FieldMappingMysql extends \LogMon\Tests\LogConfig\FieldMappingBase
+class FieldMappingMongodbTest extends \LogMon\Tests\LogConfig\BaseFieldMapping
 {
-	protected $mappingClass = 'FieldMappingMongodb';
+	public $mappingClass = 'LogMon\LogConfig\FieldMappingMongodb';
 }

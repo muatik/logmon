@@ -1,5 +1,11 @@
 <?php
-	$fm = array(
+namespace LogMon\Tests\LogConfig;
+
+class BaseFieldMapping extends \PHPUnit_Framework_TestCase
+{
+	public function providerFieldMapping()
+	{
+		$fm = array(
 			'data' => array(
 				'raw' => array('unique' => 4, 'date'=> '2013-12-15 16:12:10', 'type' => 'warning', 'message' => 'This is a nice log entry.'),
 				'mapped' => array('unique' => 4, 'date'=> '2013-12-15 16:12:10', 'type' => 'warning', 'message' => 'This is a nice log entry.')
@@ -23,4 +29,31 @@
 				'message' => (object) array('fieldName'=>'line', 'regex' => '^\d+ \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [a-z]+ (.+)')
 			)
 		);
-return $fm;
+		return array(array($fm));
+	}
+
+
+	/**
+	 * @provider providerFieldMapping
+	 */
+	public function testSetFieldMapping($fm)
+	{
+		$mapper = $mappingClass();
+		$this->assertEquals($mapper->fromJson($fm));
+	}
+
+	public function testGetFieldMapping()
+	{
+		$this->markTestIncomplete('This test has not been implemented yet.');
+	}	
+
+	public function testMap()
+	{
+		$this->markTestIncomplete('This test has not been implemented yet.');
+	}	
+
+	public function testGetFieldMapping()
+	{
+		$this->markTestIncomplete('This test has not been implemented yet.');
+	}	
+}
