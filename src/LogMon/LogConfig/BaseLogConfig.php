@@ -29,18 +29,8 @@ abstract class BaseLogConfig
 	);
 
 
-	/**
-	 * the dependency container object 
-	 *
-	 * @var Silex\Application
-	 * @access protected
-	 */
-	protected $app;
-
-
-	public function __construct(\Silex\Application $app, $data = null) 
+	public function __construct($data = null) 
 	{
-		$this->app = $app;
 		$this->properties['fieldMapping'] = $this->createFieldMapping();
 		if ($data != null)
 			$this->fromJson($data);
@@ -48,15 +38,14 @@ abstract class BaseLogConfig
 
 
 	/**
-	 * instantiates a field mapping object which is special for individual classes
+	 * instantiates a field mapper object
 	 * 
-	 * @static
-	 * @access private
-	 * @return BaseFieldMapping
+	 * @access protected
+	 * @return FieldMapper
 	 */
 	protected function createFieldMapping() 
 	{
-		// must be implement in each individual derived class
+		return new FieldMapper();
 	}
 
 
@@ -125,6 +114,24 @@ abstract class BaseLogConfig
 			}
 		} 
 	}
+
+	/**
+	 * 
+	 * @param string $parameter
+	 * @access protected
+	 * @return void
+	 * @throws \Exception
+	 */
+	protected function setParameter($parameter, $value)
+	{
+		if (mb_strlen($value) == 0)
+			throw new \InvalidArgumentException(
+				sprintf('The config parameter "%s" cannot be empty.', $parameter)
+			);
+
+		$this->properties[$parameter] = $value;
+	}
+
 
 	public function setFieldMapping(Array $mappings)
 	{

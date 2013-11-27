@@ -19,10 +19,10 @@ class ReaderMysql
 			->setMaxResults($this->limit);
 
 		$queryBuilder->addSelect(array(
-			'c.'.$fieldMapping->unique->fieldName.' as `unique`',
-			'c.'.$fieldMapping->type->fieldName.' as `type`',
-			'c.'.$fieldMapping->message->fieldName.' as `message`',
-			'c.'.$fieldMapping->date->fieldName.' as `date`'
+			'c.'.$fieldMapping->unique->fieldName,
+			'c.'.$fieldMapping->type->fieldName,
+			'c.'.$fieldMapping->message->fieldName,
+			'c.'.$fieldMapping->date->fieldName
 		));
 		
 		$cursor = $queryBuilder->execute();

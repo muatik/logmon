@@ -33,15 +33,6 @@ class ConfigLocalFile
 
 
 	/**
-	 * @overrides
-	 */
-	protected function createFieldMapping() 
-	{
-		return new FieldMappingTextFile();
-	}
-
-
-	/**
 	 * sets the file system path of the log.
 	 * If the given path is not valid, an exception will be thrown.
 	 * 

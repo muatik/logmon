@@ -38,13 +38,20 @@ class ConfigMongodb
 	);
 
 	/**
-	 * @overrides
+	 * mysql connection factory
+	 * 
+	 * @var \Closure
+	 * @access protected
 	 */
-	protected function createFieldMapping() 
+	protected $connectionFactory;
+
+
+	public function __construct(\Closure $mongoConnectionFactory, $data = null) 
 	{
-		return new FieldMappingMongodb();
+		parent::__construct($data);
+		$this->connectionFactory = $mongoConnectionFactory;
 	}
-	
+
 
 	/**
 	 * sets host address
@@ -140,7 +147,8 @@ class ConfigMongodb
 		);
 		
 		// test connectivity through the doctrine's dbal
-		$conn = $this->app['db.mongodb.getConnection']($connParams);
+		$factory = $this->connectionFactory;
+		$conn = $factory($connParams);
 		$db = $conn->selectDatabase($conf['databaseName']);
 		return $db->selectCollection($conf['collectionName']);
 	}

@@ -1,7 +1,7 @@
 <?php
 namespace LogMon\LogReader;
 
-use LogMon\LogConfig\IFieldMapping;
+use LogMon\LogConfig\IFieldMapper;
 
 /**
  * Entris Iterator for MySQL Results 
@@ -16,7 +16,7 @@ use LogMon\LogConfig\IFieldMapping;
  */
 class EntriesMysql extends Entries
 {
-	public function __construct($cursor, IFieldMapping $fieldMapping)
+	public function __construct($cursor, IFieldMapper $fieldMapping)
 	{
 		parent::__construct($cursor, $fieldMapping);
 		$this->cursor = $cursor->fetchAll();

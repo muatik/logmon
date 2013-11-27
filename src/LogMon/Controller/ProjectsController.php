@@ -16,7 +16,7 @@ class ProjectsController implements ControllerProviderInterface
 		$index->delete('/{id}', array($this, 'delete'));
 		$index->get('/log/entries', function(Application $app) {
 			
-			$logConfig = new \LogMon\LogConfig\ConfigMysql($app, json_encode(array(
+			$logConfig = new \LogMon\LogConfig\ConfigMysql($app['db.mysql.getConnection'], json_encode(array(
 				'host' => 'localhost',
 				'port' => '3306',
 				'charset' => 'utf8',
@@ -31,12 +31,13 @@ class ProjectsController implements ControllerProviderInterface
 					'message' => array('fieldName' => 'text', 'regex' => '(.*)')
 				)
 			)));
-			$logConfig2 = new \LogMon\LogConfig\ConfigMysql($app, json_encode(array(
+			$logConfig2 = new \LogMon\LogConfig\ConfigMongodb($app['db.mongodb.getConnection'], json_encode(array(
 				'host' => 'localhost',
 				'port' => '3306',
 				'charset' => 'utf8',
 				'username' => 'root',
 				'password' => 'root',
+				'auth' => false,
 				'databaseName' => 'test',
 				'collectionName' => 'logTable2',
 				'fieldMapping' => array(

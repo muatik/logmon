@@ -23,13 +23,13 @@ class Manager
 		
 		switch ($rawConfig->storageType) {
 			case 'localFile':
-				$logConfig = new ConfigLocalFile($app);
+				$logConfig = new ConfigLocalFile();
 				break;
 			case 'mongodb':
-				$logConfig = new ConfigMongodb($app);
+				$logConfig = new ConfigMongodb($app['db.mongodb.getConnection']);
 				break;
 			case 'mysql':
-				$logConfig = new ConfigMysql($app);
+				$logConfig = new ConfigMysql($app['db.mysql.getConnection']);
 				break;
 			default:
 				throw new \Exception(

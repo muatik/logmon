@@ -20,6 +20,20 @@ class ConfigMysql
 	 * @access protected
 	 */
 	protected $storageType = 'mysql';
+	
+	/**
+	 * mysql connection factory
+	 * 
+	 * @var \Closure
+	 * @access protected
+	 */
+	protected $connectionFactory;
+
+	public function __construct(\Closure $mysqlConnectionFactory, $data = null) 
+	{
+		parent::__construct($data);
+		$this->connectionFactory = $mysqlConnectionFactory;
+	}
 
 	/**
 	 * the configuration of mysql connection
@@ -37,15 +51,6 @@ class ConfigMysql
 		'charset' => 'utf8',
 		'fieldMapping' => null
 	);
-
-
-	/**
-	 * @overrides
-	 */
-	protected function createFieldMapping() 
-	{
-		return new FieldMappingMysql();
-	}
 
 
 	/**
@@ -122,25 +127,6 @@ class ConfigMysql
 
 
 	/**
-	 * sets the file system path of the log.
-	 * If the given path is not valid, an exception will be thrown.
-	 * 
-	 * @param string $filePath 
-	 * @access private
-	 * @return void
-	 * @throws \Exception
-	 */
-	private function setParameter($parameter, $value)
-	{
-		if (mb_strlen($value) == 0)
-			throw new \InvalidArgumentException(
-				sprintf('The config parameter "%s" cannot be empty.', $parameter)
-			);
-
-		$this->properties[$parameter] = $value;
-	}
-
-	/**
 	 * returns a connection resource of the storage
 	 * If fails, an exception will be thrwon.
 	 *
@@ -162,7 +148,8 @@ class ConfigMysql
 		);
 
 		// test connectivity through the doctrine's dbal
-		$conn = $this->app['db.mysql.getConnection']($connParams);
+		$factory = $this->connectionFactory;
+		$conn = $factory($connParams);
 		$conn->connect();
 		return $conn;
 	}
