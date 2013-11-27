@@ -1,13 +1,14 @@
 <?php
 namespace LogMon\Tests\LogConfig;
 
-abstract class BaseFieldMapping extends \PHPUnit_Framework_TestCase
+use LogMon\LogConfig\FieldMapper;
+
+class FieldMapperTest extends \PHPUnit_Framework_TestCase
 {
-	public $mappingClass;
 	
 	public function setUp()
 	{
-		$this->mapper = new $this->mappingClass();
+		$this->mapper = new FieldMapper();
 	}
 
 	public function providerFieldMapping()

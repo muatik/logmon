@@ -1,7 +1,7 @@
 <?php
 namespace LogMon\LogConfig;
 
-interface IFieldMapping
+interface IFieldMapper
 {
 	
 	/**

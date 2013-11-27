@@ -1,7 +1,7 @@
 <?php
 namespace LogMon\LogConfig;
 
-abstract class BaseFieldMapping implements IFieldMapping
+class FieldMapper implements IFieldMapper
 {
 	/**
 	 * the list of the field.
@@ -9,7 +9,23 @@ abstract class BaseFieldMapping implements IFieldMapping
 	 * @var array
 	 * @access protected
 	 */
-	protected $fields = array();
+	protected $fields = array(
+		'unique' => array('fieldName' => null, 'regex' => '(.*)'),
+		'date' => array('fieldName' => null, 'regex' => '(.*)'),
+		'type' => array('fieldName' => null, 'regex' => '(.*)'),
+		'message' => array('fieldName' => null, 'regex' => '(.*)'),
+	);
+
+
+	public function __construct()
+	{
+		$defaultMapping = new \stdClass();
+		$defaultMapping->fieldName = null;
+		$defaultMapping->regex = '(.*)';
+		foreach ($this->fields as $field => $val)
+			$this->fields[$field] = $defaultMapping;
+	}
+
 
 	public function __get($name)
 	{
