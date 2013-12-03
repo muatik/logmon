@@ -14,20 +14,12 @@ abstract class Reader
 	protected $logConfig;
 
 	/**
-	 * the connection of log resource
+	 * log filters
 	 * 
-	 * @var mixed
+	 * @var array
 	 * @access protected
 	 */
-	protected $connection;
-
-	/**
-	 * indicates whether the class is initialized or not
-	 * 
-	 * @var boolean
-	 * @access protected
-	 */
-	protected $isInitialized = false;
+	protected $filters = array();
 
 	/**
 	 * specifiy the maxiumum amount of log entiries for each fetching
@@ -46,18 +38,72 @@ abstract class Reader
 
 	public function __construct(\LogMon\LogConfig\IConfig $logConfig)
 	{
+		$this->resetFilters();
 		$this->logConfig = $logConfig;
 	}
 
+
 	/**
-	 * initializes necesssary resources for essentail functions
-	 * 
-	 * @access public
-	 * @return void
+	 * @implements IReader
 	 */
-	public function initialize()
+	public function filterBySearching($keyword)
 	{
-		$this->logConfig->test();
-		$this->connection = $this->logConfig->getConnection();
+		if (!is_string($keyword))
+			throw new \InvalidArgumentException(sprintf(
+				"Search term can only be a string. '%s' was given.", $keyword
+			));
+
+		$this->filters['search'] = $keyword;
+	}
+
+	/**
+	 * @Implements IReader
+	 */
+	public function filterByLevel($level)
+	{
+		if (!is_string($level))
+			throw new \InvalidArgumentException(sprintf(
+				"Log level can only be a string. '%s' was given.", $level
+			));
+
+		$this->filters['level'] = $level;
+	}
+
+	/**
+	 * @Implements IReader
+	 */
+	public function filterByDateRange($range)
+	{
+		if (isset($range['greatherThan'], $range['lowerThan']))
+			throw new \InvalidArgumentException(sprintf(
+				"Date range can only be an array such as Array('greaterThan' => "
+				. "'YYYY-mm-dd HH:ii:ss', 'lowerThan' => 'YYYY-mm-dd HH:ii:ss'). "
+				. "'%s' was given", (string) $range
+			));
+
+		$this->filters['date'] = $range;
+	}
+
+	/**
+	 * @Implements IReader
+	 */
+	public function resetFilters()
+	{
+		$this->filters = array(
+			'search' => null, // string
+			'level' => null, // string
+			'date' => array(
+				'greatherThan' => null, // string (YYYY-mm-dd HH:ii:ss)
+				'lowerThan' => null // string (YYYY-mm-dd HH:ii:ss)
+			)
+		);
+	}
+
+	/**
+	 * @Implements IReader
+	 */
+	public function getFilters()
+	{
+		return $this->filters;
 	}
 }
