@@ -22,7 +22,7 @@ abstract class Reader
 	protected $filters = array();
 
 	/**
-	 * specifiy the maxiumum amount of log entiries for each fetching
+	 * specifies the maxiumum amount of log entiries for each fetching
 	 * 
 	 * @var int
 	 * @access protected
@@ -74,12 +74,13 @@ abstract class Reader
 	 */
 	public function filterByDateRange($range)
 	{
-		if (isset($range['greatherThan'], $range['lowerThan']))
+		if (!isset($range['greaterThan'], $range['lowerThan'])) { 
 			throw new \InvalidArgumentException(sprintf(
 				"Date range can only be an array such as Array('greaterThan' => "
 				. "'YYYY-mm-dd HH:ii:ss', 'lowerThan' => 'YYYY-mm-dd HH:ii:ss'). "
-				. "'%s' was given", (string) $range
+				. "'%s' was given", (is_array($range) ? implode(', ', $range) : gettype($range))
 			));
+		}
 
 		$this->filters['date'] = $range;
 	}
@@ -93,7 +94,7 @@ abstract class Reader
 			'search' => null, // string
 			'level' => null, // string
 			'date' => array(
-				'greatherThan' => null, // string (YYYY-mm-dd HH:ii:ss)
+				'greaterThan' => null, // string (YYYY-mm-dd HH:ii:ss)
 				'lowerThan' => null // string (YYYY-mm-dd HH:ii:ss)
 			)
 		);
@@ -105,5 +106,24 @@ abstract class Reader
 	public function getFilters()
 	{
 		return $this->filters;
+	}
+
+	/**
+	 * @Implements IReader
+	 */
+	public function setLimit($limit)
+	{
+		if (!is_int($limit) || $limit < 1 || $limit > 100)
+			throw new \InvalidArgumentException('Limit value must be between 1 and 100');
+
+		$this->limit = $limit;
+	}
+
+	/**
+	 * @Implements IReader
+	 */
+	public function getLimit()
+	{
+		return $this->limit;
 	}
 }

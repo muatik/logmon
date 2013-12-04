@@ -7,9 +7,38 @@ use LogMon\LogConfig;
 class ReaderTest extends \PHPUnit_Framework_TestCase
 {
 	
+	
+	public static $connectionFactory = 'db.mysql.getConnection';
+	public static $app;
+
+	public static function setUpBeforeClass()
+	{
+		require ROOT . '/resources/config/default.php';
+		self::$app = require ROOT . '/src/app.php';
+	}
+
 	public function setUp()
 	{
-		$this->reader = new ReaderTextFile();
+		$configSets = (object) array(
+			'host' => 'localhost',
+			'port' => '3306',
+			'charset' => 'utf8',
+			'username' => 'root',
+			'password' => 'root',
+			'databaseName' => 'test',
+			'collectionName' => 'logTable1',
+			'fieldMapper' => (object) array(
+				'unique' => (object) array('fieldName' => 'id', 'regex' => '(.*)'),
+				'date' => (object) array('fieldName' => 'date', 'regex' => '(.*)'),
+				'level' => (object) array('fieldName' => 'level', 'regex' => '(.*)'),
+				'message' => (object) array('fieldName' => 'text', 'regex' => '(.*)')
+			)
+		);
+
+		$factory = self::$app[self::$connectionFactory];
+		$logConfig = new LogConfig\ConfigMysql($factory);
+		$logConfig->fromJson($configSets);
+		$this->reader = new LogReader\ReaderMysql($logConfig);
 	}
 
 	public function providerKeywords()
@@ -22,7 +51,7 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 
-	public function providerLogLevel
+	public function providerLogLevel()
 	{
 		return array(
 			array('debug'),
@@ -35,14 +64,14 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 	public function providerDataRange()
 	{
 		return array(
-			array('greaterThan' => null, 'lowerThan' => null),
-			array('greaterThan' => '2013-12-16 22:20:00', 'lowerThan' => null),
-			array('greaterThan' => '2013-12-16 22:20:00', 'lowerThan' => '2013-12-17 18:10:00'),
-			array('greaterThan' => null, 'lowerThan' => '2013-12-17 18:10:00')
+			array(array('greaterThan' => 'x', 'lowerThan' => 'x')),
+			array(array('greaterThan' => '2013-12-16 22:20:00', 'lowerThan' => '')),
+			array(array('greaterThan' => '2013-12-16 22:20:00', 'lowerThan' => '2013-12-17 18:10:00')),
+			array(array('greaterThan' => '', 'lowerThan' => '2013-12-17 18:10:00'))
 		);
 	}
 
-	public function poviderLimitException()
+	public function providerLimitException()
 	{
 		// anything except integer
 		return array(
@@ -79,7 +108,7 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testFilterByDateRange($range)
 	{
-		$this->reader->filterByDateRange($range['greaterThan'], $range['lowerThan']);
+		$this->reader->filterByDateRange($range);
 		$filters = $this->reader->getFilters();
 		$this->assertEquals($filters['date'], $range);
 	}
@@ -87,7 +116,7 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 	public function testResetFilter()
 	{
 		$this->reader->filterBySearching('a search term');
-		$this->reader->resetFilter();
+		$this->reader->resetFilters();
 		$filters = $this->reader->getFilters();
 		$this->assertEquals($filters['search'], null);
 	}
@@ -100,7 +129,7 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * @dataProvider providerLimitException
-	 * @exception \InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testSetLimitException($limit)
 	{

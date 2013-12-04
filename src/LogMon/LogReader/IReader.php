@@ -29,12 +29,11 @@ interface IReader
 	/**
 	 * sets date range filter
 	 * 
-	 * @param string $beginDate YYYY-mm-dd HH:ii:ss
-	 * @param string $endDate  YYYY-mm-dd HH:ii:ss
+	 * @param array $beginDate array('greatherThan' => 'YYYY-mm-dd HH:ii:ss', 'lowerThan' => 'YYYY-mm-dd HH:ii:ss')
 	 * @access public
 	 * @return void
 	 */
-	public function filterByDateRange($beginDate, $endDate);
+	public function filterByDateRange($range);
 
 	/**
 	 * resest all filters
@@ -59,6 +58,24 @@ interface IReader
 	 * @return Array
 	 */
 	public function getFilters();
+
+	/**
+	 * specifies the maxiumum amount of log entiries for each fetching
+	 * 
+	 * @param int $limit 
+	 * @access public
+	 * @return void
+	 * @throws \InvalidArgumentException if limit <1 or limit > 100
+	 */
+	public function setLimit($limit);
+	
+	/**
+	 * returns limit value
+	 * 
+	 * @access public
+	 * @return int
+	 */
+	public function getLimit();
 
 	/**
 	 * fetchs log entries from source

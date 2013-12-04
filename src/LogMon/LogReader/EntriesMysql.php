@@ -16,15 +16,15 @@ use LogMon\LogConfig\IFieldMapper;
  */
 class EntriesMysql extends Entries
 {
-	public function __construct($cursor, IFieldMapper $fieldMapping)
+	public function __construct($cursor, IFieldMapper $fieldMapper)
 	{
-		parent::__construct($cursor, $fieldMapping);
+		parent::__construct($cursor, $fieldMapper);
 		$this->cursor = $cursor->fetchAll();
 	}
 
 	public function current ()
 	{
-		return $this->fieldMapping->map($this->cursor[$this->position]);
+		return $this->cursor[$this->position];
 	}
 
 	public function rewind ()

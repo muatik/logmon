@@ -30,10 +30,10 @@ abstract class BaseLogConfigTest extends \PHPUnit_Framework_TestCase
 				'password' => 'root',
 				'databaseName' => 'test',
 				'collectionName' => 'logTable1',
-				'fieldMapping' => (object) array(
+				'fieldMapper' => (object) array(
 					'unique' => (object) array('fieldName' => 'id', 'regex' => '(.*)'),
 					'date' => (object) array('fieldName' => 'at', 'regex' => '(.*)'),
-					'type' => (object) array('fieldName' => 'type', 'regex' => '(.*)'),
+					'level' => (object) array('fieldName' => 'leve', 'regex' => '(.*)'),
 					'message' => (object) array('fieldName' => 'text', 'regex' => '(.*)')
 				)
 			)

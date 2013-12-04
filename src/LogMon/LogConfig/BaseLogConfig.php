@@ -25,13 +25,13 @@ abstract class BaseLogConfig
 	 * @access protected
 	 */
 	protected $properties = array(
-		'fieldMapping' => null // will be initialized in __construct()
+		'fieldMapper' => null // will be initialized in __construct()
 	);
 
 
 	public function __construct($data = null) 
 	{
-		$this->properties['fieldMapping'] = $this->createFieldMapping();
+		$this->properties['fieldMapper'] = $this->createFieldMapping();
 		if ($data != null)
 			$this->fromJson($data);
 	}
@@ -77,7 +77,7 @@ abstract class BaseLogConfig
 				);
 		}
 
-		$isMappingValid = $this->properties['fieldMapping']->validate();
+		$isMappingValid = $this->properties['fieldMapper']->validate();
 		return $isMappingValid;
 	}
 
@@ -135,11 +135,11 @@ abstract class BaseLogConfig
 
 	public function setFieldMapping(Array $mappings)
 	{
-		$fieldMapping = $this->createFieldMapping();
+		$fieldMapper = $this->createFieldMapping();
 		foreach ($mapping as $field => $mapping)
 			$fieldmapping->setFieldMapping($field, $mapping);
 		
-		$this->properties['fieldMapping'] = $fieldMapping;
+		$this->properties['fieldMapper'] = $fieldMapper;
 	}
 
 	/**
@@ -183,9 +183,8 @@ abstract class BaseLogConfig
 	{
 		$data = $this->properties;
 		$data['storageType'] = $this->storageType;
-		if (is_object($data['fieldMapping']))
-			$data['fieldMapping'] = json_decode(
-				$this->properties['fieldMapping']->toJson());
+		if (is_object($data['fieldMapper']))
+			$data['fieldMapper'] = $this->properties['fieldMapper']->toJson();
 
 		return ($encode ? json_encode($data) : $data);
 	}
@@ -216,10 +215,10 @@ abstract class BaseLogConfig
 				   	$parameter
 				));
 			
-			if ($parameter == 'fieldMapping') {
-				$fieldMapping = $this->createFieldMapping();
-				$fieldMapping->fromJson($jsonObject->$parameter);
-				$this->properties[$parameter] = $fieldMapping;
+			if ($parameter == 'fieldMapper') {
+				$fieldMapper = $this->createFieldMapping();
+				$fieldMapper->fromJson($jsonObject->$parameter);
+				$this->properties[$parameter] = $fieldMapper;
 			} else {
 				$this->properties[$parameter] = $jsonObject->$parameter;
 			}

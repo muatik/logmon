@@ -12,7 +12,7 @@ class FieldMapper implements IFieldMapper
 	protected $fields = array(
 		'unique' => array('fieldName' => null, 'regex' => '(.*)'),
 		'date' => array('fieldName' => null, 'regex' => '(.*)'),
-		'type' => array('fieldName' => null, 'regex' => '(.*)'),
+		'level' => array('fieldName' => null, 'regex' => '(.*)'),
 		'message' => array('fieldName' => null, 'regex' => '(.*)'),
 	);
 
@@ -124,9 +124,9 @@ class FieldMapper implements IFieldMapper
 	/**
 	 * @implements IFieldMapping
 	 */
-	public function toJson()
+	public function toJson($encode = false)
 	{
-		return json_encode($this->fields);
+		return ($encode ? json_encode($this->fields) : $this->fields);
 	}
 
 
