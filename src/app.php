@@ -67,16 +67,18 @@ $app['db.mongodb.getConnection'] = function($app) {
 
 		if (isset($connParams['auth']) && $connParams['auth']) {
 			$connString = sprintf(
-				'mongodb://%s:%s@%s/%s',
+				'mongodb://%s:%s@%s:%s/%s',
 				$connParams['username'],
 				$connParams['password'],
 				$connParams['host'],
+				$connParams['port'],
 				$connParams['database']
 			);
 		} else {
 			$connString = sprintf(
-				'mongodb://%s/%s',
+				'mongodb://%s:%s/%s',
 				$connParams['host'],
+				$connParams['port'],
 				$connParams['database']
 			);
 		}

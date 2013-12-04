@@ -8,7 +8,7 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 {
 	
 	
-	public static $connectionFactory = 'db.mysql.getConnection';
+	public static $connectionFactory = 'db.mongodb.getConnection';
 	public static $app;
 
 	public static function setUpBeforeClass()
@@ -18,6 +18,32 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	public function setUp()
+	{
+		$configSets = (object) array(
+			'host' => 'localhost',
+			'port' => '27017',
+			'charset' => 'utf8',
+			'username' => 'root',
+			'auth' => false,
+			'password' => 'root',
+			'databaseName' => 'test',
+			'collectionName' => 'log1',
+			'fieldMapper' => (object) array(
+				'unique' => (object) array('fieldName' => 'id', 'regex' => '(.*)'),
+				'date' => (object) array('fieldName' => 'at', 'regex' => '(.*)'),
+				'level' => (object) array('fieldName' => 'sev', 'regex' => '(.*)'),
+				'message' => (object) array('fieldName' => 'text', 'regex' => '(.*)')
+			)
+		);
+
+		$factory = self::$app[self::$connectionFactory];
+		$logConfig = new LogConfig\ConfigMongodb($factory);
+		$logConfig->fromJson($configSets);
+		$this->reader = new LogReader\ReaderMongodb($logConfig);
+	}
+
+	
+	public function setup2()
 	{
 		$configSets = (object) array(
 			'host' => 'localhost',
@@ -41,6 +67,7 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 		$this->reader = new LogReader\ReaderMysql($logConfig);
 	}
 
+	
 	public function providerKeywords()
 	{
 		return array(

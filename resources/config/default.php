@@ -29,6 +29,7 @@ $app['db.config.mysql'] = array(
 // If you use MongoDB, configure and comment out the following set:
 $app['db.config.mongodb'] = array(
 	'host' => 'localhost',
+	'port' => '27017',
 	'database' => 'logmon',
 	'auth' => false, // Does mongodb require authentication?
 	'user' => '',
