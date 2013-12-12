@@ -16,9 +16,9 @@ use LogMon\LogConfig\IFieldMapper;
  */
 class EntriesMysql extends Entries
 {
-	public function __construct($cursor, IFieldMapper $fieldMapper)
+	public function __construct($cursor, IFieldMapper $mapper)
 	{
-		parent::__construct($cursor, $fieldMapper);
+		parent::__construct($cursor, $mapper);
 		$this->cursor = $cursor->fetchAll();
 	}
 

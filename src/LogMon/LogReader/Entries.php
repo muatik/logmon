@@ -11,9 +11,9 @@ abstract class Entries implements \SeekableIterator, \Countable
 	
 	protected $fieldMapping;
 
-	public function __construct($cursor, IFieldMapper $fieldMapping)
+	public function __construct($cursor, IFieldMapper $mapper)
 	{
-		$this->fieldMapping = $fieldMapping;
+		$this->mapper = $mapper;
 		$this->cursor = $cursor;
 		$this->position = 0;
 		$this->rewind();

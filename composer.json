@@ -16,6 +16,7 @@
 		"doctrine/mongodb": "1.1.*@dev",
 		"filp/whoops": "1.*",
 		"silex/web-profiler": "~1.0",
-		"phpunit/phpunit" : "*"
+		"phpunit/phpunit" : "*",
+		"symfony/security": "~2.3"
 	}
 }
