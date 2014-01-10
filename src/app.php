@@ -120,13 +120,20 @@ $app['project.factory'] = function($app) {
 	return new LogMon\Projects\Project();
 };
 
+$app->register(new Silex\Provider\UrlGeneratorServiceProvider());
+/**
+ * AUTHENTICATION SETTINGS
+ * */
+require ROOT.'resources/config/security.php';
+
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new Silex\Provider\TwigServiceProvider());
-$app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\WebProfilerServiceProvider(), array(
     'profiler.cache_dir' => __DIR__.'/../temp/profiler',
     'profiler.mount_prefix' => '/_profiler', // this is the default
 ));
+
+
 
 require ROOT.'src/LogMon/router.php';
 
