@@ -15,6 +15,7 @@ class LogController implements ControllerProviderInterface
 
 	public function index(Application $app){
 		$request = $app['request'];
+		print_r($app['user']);die();
 		print_r($request->getContent());
 		return 'log index';
 	}

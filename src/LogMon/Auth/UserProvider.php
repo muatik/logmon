@@ -36,7 +36,7 @@ class UserProvider implements UserProviderInterface
 			);
 
 		$user->setId($userRecord['_id']);
-
+		
 		return $user;
 	}
 

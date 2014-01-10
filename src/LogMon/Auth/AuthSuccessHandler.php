@@ -9,9 +9,10 @@ use LogMon\Auth\UserProvider;
 
 class AuthSuccessHandler implements AuthenticationSuccessHandlerInterface
 {
-	public function __construct(\Doctrine\MongoDB\Database $db)
+	public function __construct(\Doctrine\MongoDB\Database $db , $sessionManager)
 	{
 		$this->userProvider = new  UserProvider($db);
+		$this->sessionManager = $sessionManager;
 	}
 	
 	/**
@@ -26,7 +27,10 @@ class AuthSuccessHandler implements AuthenticationSuccessHandlerInterface
 	 */
 	public function onAuthenticationSuccess(Request $request, TokenInterface $token)
 	{
-		$this->userProvider->updateLastLoginAt($request->get('email'));		
-		return new Response('Login was successful.', 200);
+		$this->userProvider->updateLastLoginAt($request->get('email'));	
+		$response =new \LogMon\Helpers\Response;
+		$response->setStatusMessage('Login was successful.');
+		$response->setData('CREDENTIAL_ID',$this->sessionManager->getId());		
+		return new Response(json_encode($response), 200);
 	}
 }

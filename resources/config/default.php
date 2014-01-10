@@ -70,3 +70,9 @@ $app['logging.mysql.config'] = $app['db.config.mysql'];
 $app['logging.database'] = 'logmong'; 
 $app['logging.table'] = 'logs';
 
+
+/**
+ * SESSION CONFIGURATIONS
+ * ------------------------------------------------------------------
+ */
+$app['session.storage.options'] = array('name' => 'CREDENTIAL_ID');

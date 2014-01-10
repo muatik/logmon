@@ -11,6 +11,7 @@ use LogMon\Manager\MongoDBCollection;
 if (isset($app)) {
 	$appConfig = $app;
 	$app = new Silex\Application();
+	$app->register(new Silex\Provider\SessionServiceProvider());
 	foreach($appConfig as $k => $v)
 		$app[$k] = $v;
 	
@@ -27,7 +28,7 @@ if (isset($app)) {
 /**
  * registering services
  * */
-$app->register(new Silex\Provider\SessionServiceProvider(), array());
+
 if ($app['debug']) {
 	error_reporting(E_ALL);
 	ini_set('display_errors','on');

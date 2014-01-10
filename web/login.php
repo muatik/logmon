@@ -6,18 +6,18 @@
 </head>
 <body>
 Login
-<form action="index.php/signin" method="post">
+<form action="index.php/API/v1/auth" method="post">
     <input type="text" name="email" value="" />
     <input type="password" name="password" value="" />
     <input type="submit" />
 </form>
 
 Register
-<form action="index.php/signup" method="post">
+<form action="index.php/API/v1/auth/registration" method="post">
     <input type="text" name="email" value="" />
     <input type="password" name="password" value="" />
     <input type="submit" />
 </form>
-<a href="index.php/logout">logout</a>
+<a href="index.php/API/v1/auth/logout">logout</a>
 </body>
 </html>

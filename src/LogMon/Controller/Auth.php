@@ -4,7 +4,9 @@ namespace LogMon\Controller;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use LogMon\Auth\UserProvider;
-use Symfony\Component\HttpFoundation\Response;
+use LogMon\Helpers\Response;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class Auth implements ControllerProviderInterface
 {
@@ -13,7 +15,7 @@ class Auth implements ControllerProviderInterface
 		$router = $app['controllers_factory'];
 
 		$router->get('/failure', array($this, 'failure'));
-		$router->post('/signup', array($this, 'register'));
+		$router->post('/registration', array($this, 'register'));
 
 		$this->userProvider = new UserProvider($app['db.mongodb']);
 		return $router;
@@ -21,7 +23,8 @@ class Auth implements ControllerProviderInterface
 
 	public function failure(Application $app) 
 	{
-		return new Response('Login required.', 500);
+		$response = new Response();
+		$response->setStatus(30, 'Login required!!!');
 		return $app->json($response);
 	}
 
@@ -32,11 +35,20 @@ class Auth implements ControllerProviderInterface
 		$password = $app['request']->get('password');
 		try {
 			$this->userProvider->register($email,$password);
-			return new Response(sprintf(
-				"The email '%s' has just been registered.", $email), 200);
-			$response->setStatusMessage();
+			
+			$response->setStatusMessage(sprintf(
+				"The email '%s' has just been registered.", $email));
+			$params = array('email' => $email,'password' => $password);
+				
+			$subRequest = Request::create('/API/v1/auth', 'POST', $params);
+			$app->handle($subRequest, HttpKernelInterface::MASTER_REQUEST);
+						
+			$response->setData('CREDENTIAL_ID',$app['session']->getId());
+			
 		} catch (\Exception $e) {
-			return new Response($e->getMessage(), 500);
+			$response->setStatus(30, $e->getMessage());
 		}
+
+		return $app->json($response);
 	}
 }
