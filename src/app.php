@@ -83,7 +83,6 @@ $app['db.mongodb.getConnection'] = function($app) {
 				$connParams['database']
 			);
 		}
-
 		return new \Doctrine\MongoDB\Connection($connString);
 	};
 };
@@ -113,7 +112,7 @@ $app['db.mongodb.collection'] = function($app) {
 $app['projects'] = $app->share(function($app) {
 	return new LogMon\Projects\Manager(
 		$app,  // required when the manager builds logConfig objects.
-		$app['db.mysql.collection']
+		$app['db.mongodb.collection']
 	);
 });
 
@@ -127,12 +126,6 @@ $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
  * */
 require ROOT.'resources/config/security.php';
 
-$app->register(new Silex\Provider\ServiceControllerServiceProvider());
-$app->register(new Silex\Provider\TwigServiceProvider());
-$app->register(new Silex\Provider\WebProfilerServiceProvider(), array(
-    'profiler.cache_dir' => __DIR__.'/../temp/profiler',
-    'profiler.mount_prefix' => '/_profiler', // this is the default
-));
 
 
 

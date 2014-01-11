@@ -1,17 +1,17 @@
 <?php
-namespace LogMon\Helpers;
+namespace LogMon;
 
 class Response implements \JsonSerializable
 {
 	/**
 	 * statusCode 
-	 * 20 = successful
-	 * 30 = error
+	 * 1 = successful
+	 * 0 = error
 	 * 
 	 * @var float
 	 * @access private
 	 */
-	private $statusCode = 20;
+	private $statusCode = 1;
 	private $statusMessage = 'successful';
 	private $data;
 

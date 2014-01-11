@@ -145,7 +145,6 @@ class MysqlDBCollection implements IDBCollection
 			$queryBuilder->add('where', $expr);
 
 			$affectedRows = $queryBuilder->execute();
-
 			if ($affectedRows < 1) {
 				$result->success = false;
 			} else {

@@ -20,11 +20,11 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 --
 
 CREATE TABLE IF NOT EXISTS `projects` (
-	  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+	  `_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
 	  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
 	  `codeName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
 	  `logConfig` text COLLATE utf8_unicode_ci NOT NULL,
-	  PRIMARY KEY (`id`),
+	  PRIMARY KEY (`_id`),
 	  UNIQUE KEY `codeName` (`codeName`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 

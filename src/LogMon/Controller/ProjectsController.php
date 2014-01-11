@@ -7,6 +7,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ProjectsController implements ControllerProviderInterface
 {
+
+
 	public function connect(Application $app)
 	{
 		$index = $app['controllers_factory'];
@@ -60,8 +62,10 @@ class ProjectsController implements ControllerProviderInterface
 		return $index;
 	}
 
+
 	public function register(Application $app) 
 	{
+		$response = new \LogMon\Response();
 		$projects = $app['projects'];
 		$newProject = $app['project.factory'];
 
@@ -81,31 +85,41 @@ class ProjectsController implements ControllerProviderInterface
 
 			$newProject->fromJson($jsonProject);
 
-			// TODO: return more appropriate return message
 			$projects->register($newProject);
-			$return = 'registered';
+			$response->setStatus(10, 'Project has just been registered.');
+			$response->setData('project', (object) $newProject->toJson(false));
+			$response->setData('project->logConfig', 
+				$newProject->logConfig->toJson(false)); 
 		} catch (\Exception $e) {
-			$return = $e->getMessage();
+			$response->setStatus(11, 'Project could not be registered. ' 
+				. $e->getMessage());
 		}
 
-		return $return;
+		return $app->json($response);
 	}
+
 
 	public function delete(Application $app, $id) 
 	{
+		$response = new \LogMon\Response();
 		$projects = $app['projects'];
 		$newProject = $app['project.factory'];
+		
 		try {
 			$projects->deleteById($id);
-			$return = 'deleting '.$id;
+			$response->setStatus(13, 'Project hast just been deleted permanently.');
+			$response->setData('project->_id', $id);
 		} catch (\Exception $e) {
-			$return = $e->getMessage();
+			$response->setStatus(12, 'Project could not be deleted. '. $e->getMessage());
 		}
-		return $return;
+		
+		return $app->json($response);
 	}
 
+	
 	public function update(Application $app) 
 	{
+		$response = new \LogMon\Response();
 		$projects = $app['projects'];
 		$newProject = $app['project.factory'];
 
@@ -121,38 +135,44 @@ class ProjectsController implements ControllerProviderInterface
 				$app, 
 				$jsonProject->logConfig
 			);
-			
-			$newProject->initFromObject($jsonProject);
+
+			$newProject->fromJson($jsonProject);
 			$projects->update($newProject);
-			// TODO: return more appropriate return message
-			$return = 'updated';
+			$response->setStatus(14, 'Project has just been updated.');
+			$response->setData('project', (object) $newProject->toJson(false));
+			$response->setData('project->logConfig', 
+				$newProject->logConfig->toJson(false)); 
 		} catch(\Exception $e) {
-			$return = $e->getMessage();
+			$response->setStatus(16, 'Project could not be updated. ' 
+				. $e->getMessage());
 		}
 
-		return $return;
+		return $app->json($response);
 	}
+
 
 	public function getList(Application $app) 
 	{
+		$response = new \LogMon\Response();
 		$projects = $app['projects'];
 
 		try {
-			$projectList = $projects->getAll();
+			$records = $projects->getAll();
+			$projectList = array();
+			foreach($records as $i) {
+				$i = $i->toJson(false);
+				$i['_id'] = (string) $i['_id'];
+				$i['logConfig'] =$i['logConfig']->toJson(false);
+				$projectList[] = $i;
+			}
+			$response->setData('projects', $projectList);
 		} catch (\Exception $e) {
-			return $e->getMessage();
+			$response->setStatus(16, 'Projects could not be listed. '
+			 . $e->getMessage());
 		}
 
-		$result = new \stdClass();
-		$result->projects = array();
-
-		foreach($projectList as $i) {
-			$i = $i->toJson(false);
-			$i['_id'] = (string) $i['_id'];
-			$i['logConfig'] =$i['logConfig']->toJson(false);
-			$result->projects[] = $i;
-		}	
-		
-		return json_encode($result);
+		return $app->json($response);
 	}
+
+
 }

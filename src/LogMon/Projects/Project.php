@@ -132,7 +132,12 @@ class Project
 		// TODO: logConfig must be validated before assignment
 		$this->properties['logConfig'] = $logConfig;
 	}
-	
+
+	public function getId($stringfy = false)
+	{
+		return ($stringfy ? (string) $this->properties['_id'] : $this->properties['_id']);
+	}
+
 	/**
 	 * checks whether the project is valid or not 
 	 * 
@@ -187,7 +192,7 @@ class Project
 		$rawObject = (!is_object($rawObject) ? json_decode($rawObject) : $rawObject);
 		foreach($rawObject as $key => $value)
 			if (array_key_exists($key, $this->properties))
-				$this->$key = $value;
+				$this->properties[$key] = $value;
 
 		return true;
 	}
